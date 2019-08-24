@@ -116,12 +116,12 @@ public class App {
 		glEnable(GL_TEXTURE_2D);
 
 		// Creating texture under the OpenGL context
-		Texture green_texture = new Texture("./src/resources/Neuron.png");
-		Texture activated_texture = new Texture("./src/resources/ActivatedNeuron.png");
-		Texture input_one_texture = new Texture("./src/resources/one.png");
-		Texture input_zero_texture = new Texture("./src/resources/zero.png");
-		Texture selected_input_one_texture = new Texture("./src/resources/selected_one.png");
-		Texture selected_input_zero_texture = new Texture("./src/resources/selecteed_zero.png");
+		Texture green_texture = new Texture("./src/main/resources/img/Neuron.png");
+		Texture activated_texture = new Texture("./src/main/resources/img/ActivatedNeuron.png");
+		Texture input_one_texture = new Texture("./src/main/resources/img/one.png");
+		Texture input_zero_texture = new Texture("./src/main/resources/img/zero.png");
+		Texture selected_input_one_texture = new Texture("./src/main/resources/img/selected_one.png");
+		Texture selected_input_zero_texture = new Texture("./src/main/resources/img/selecteed_zero.png");
 		// Texture selected_input_one_texture = new
 		// Texture("./src/resources/Neuron.png");
 		// Texture selected_input_zero_texture = new
