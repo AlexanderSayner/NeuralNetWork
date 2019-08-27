@@ -60,7 +60,7 @@ dependencies {
     implementation "org.lwjgl:lwjgl-opengles:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-openvr:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-opus:$lwjglVersion"
-    implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion"
+    if (lwjglNatives == "natives-windows") implementation "org.lwjgl:lwjgl-ovr:$lwjglVersion" // because LibOVR is currently only available on Windows
     implementation "org.lwjgl:lwjgl-par:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-remotery:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-rpmalloc:$lwjglVersion"
@@ -92,7 +92,7 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengles:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-openvr:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-opus:$lwjglVersion:$lwjglNatives"
-    runtimeOnly "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives"
+    if (lwjglNatives == "natives-windows") runtimeOnly "org.lwjgl:lwjgl-ovr:$lwjglVersion:$lwjglNatives" // because LibOVR is currently only available on Windows
     runtimeOnly "org.lwjgl:lwjgl-par:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-remotery:$lwjglVersion:$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-rpmalloc:$lwjglVersion:$lwjglNatives"
