@@ -1,4 +1,4 @@
-package sayner.sandbox.NeuralG.Neurons;
+package sayner.sandbox.neuralG.neurons;
 
 /**
  * Персептрон

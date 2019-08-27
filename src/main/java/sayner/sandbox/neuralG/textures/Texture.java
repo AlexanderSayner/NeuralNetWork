@@ -1,4 +1,4 @@
-package sayner.sandbox.NeuralG.Textures;
+package sayner.sandbox.neuralG.textures;
 
 import static org.lwjgl.opengl.GL11.*;
 
