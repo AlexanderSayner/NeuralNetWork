@@ -5,15 +5,17 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
+import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
-import sayner.sandbox.neuralG.neurons.NeuralNet;
+import sayner.sandbox.neuralG.level.Level;
+import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.textures.Texture;
 
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -24,6 +26,8 @@ public class App {
 
     // The window handle
     private long window;
+
+    private Level level;
 
     /**
      * Start in the new thread
@@ -39,7 +43,8 @@ public class App {
      * Запуск и освобождение памяти
      */
     public void run() {
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+
+        System.out.println(String.format("Hello LWJGL %s!", Version.getVersion()));
 
         init();
         loop();
@@ -69,6 +74,9 @@ public class App {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        // Set OpenGL 3.0 version
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
         // Create the window
         window = glfwCreateWindow(620, 620, "Fiction", NULL, NULL);
@@ -78,7 +86,7 @@ public class App {
         // Setup a key callback. It will be called every time a key is pressed, repeated
         // or released.
 
-         glfwSetKeyCallback(window, new Input()); // Здесь могла бы быть лямбда, но лучше не надо
+        glfwSetKeyCallback(window, new Input()); // Здесь могла бы быть лямбда, но лучше не надо
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
@@ -102,6 +110,8 @@ public class App {
 
         // Make the window visible
         glfwShowWindow(window);
+
+        GL.createCapabilities();
     }
 
     /**
@@ -136,7 +146,21 @@ public class App {
         // Texture("./src/resources/Neuron.png");
 
         // Set the clear color
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
+        // Вот не надо этого :)
+        glEnable(GL_DEPTH_TEST);
+        System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
+
+
+        this.level = new Level();
+        // Загружаем шейдеры
+        Shader.loadAllShaders();
+
+        // projection matrix
+        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+
+        Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
+
 
         float x = 0.3f;
         float y = 0.0f;/*
@@ -148,10 +172,11 @@ public class App {
         while (!glfwWindowShouldClose(window)) {
 
             // Starting NeuralNet
-            NeuralNet neuralNet = new NeuralNet(x1, x2);
-            int result = neuralNet.start();
+//            NeuralNet neuralNet = new NeuralNet(x1, x2);
+//            int result = neuralNet.start();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
+/*
 
             glLineWidth(5);
 
@@ -355,6 +380,14 @@ public class App {
             glVertex2f(0.25f + x, -0.07f + y);
 
             glEnd();
+
+*/
+            this.level.render();
+
+            int error = glGetError();
+            if (error != GL_NO_ERROR) {
+                System.out.println(String.format("OpenGL error code: %d", error));
+            }
 
             glfwSwapBuffers(window); // swap the color buffers
 
