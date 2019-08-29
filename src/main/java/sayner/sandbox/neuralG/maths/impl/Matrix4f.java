@@ -1,7 +1,7 @@
 package sayner.sandbox.neuralG.maths.impl;
 
-import org.lwjgl.BufferUtils;
 import sayner.sandbox.neuralG.maths.MatrixI;
+import sayner.sandbox.neuralG.utils.BufferUtils;
 
 import java.nio.FloatBuffer;
 
@@ -106,6 +106,7 @@ public class Matrix4f implements MatrixI<Float> {
 
     /**
      * Умножение матриц
+     *
      * @param matrix
      * @return
      */
@@ -131,10 +132,9 @@ public class Matrix4f implements MatrixI<Float> {
         return result;
     }
 
-    public FloatBuffer toFloatBuffer(){
+    public FloatBuffer toFloatBuffer() {
 
-        FloatBuffer floatBuffer= BufferUtils.createFloatBuffer(SIZE);
-        floatBuffer.put(elements);
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(this.elements);
 
         return floatBuffer;
     }

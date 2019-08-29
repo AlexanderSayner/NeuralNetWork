@@ -6,7 +6,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
-import sayner.sandbox.neuralG.input.Input;
+//import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.level.Level;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.textures.Texture;
@@ -86,7 +86,7 @@ public class App {
         // Setup a key callback. It will be called every time a key is pressed, repeated
         // or released.
 
-        glfwSetKeyCallback(window, new Input()); // Здесь могла бы быть лямбда, но лучше не надо
+//        glfwSetKeyCallback(window, new Input()); // Здесь могла бы быть лямбда, но лучше не надо
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
@@ -394,6 +394,7 @@ public class App {
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
+/*
 
             // ESCAPE
             if (Input.getKeyActionStatus(GLFW_KEY_ESCAPE)) {
@@ -440,6 +441,7 @@ public class App {
                 else
                     x2 = 0;
             }
+*/
 
             /*
              * // Mouse 0 - left, 1 - right, 2 - scroll if(glfwGetMouseButton(window, 0) ==
