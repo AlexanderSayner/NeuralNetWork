@@ -1,15 +1,14 @@
 package sayner.sandbox.neuralG;
 
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.level.Level;
+import sayner.sandbox.neuralG.level.Triangle;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
-import sayner.sandbox.neuralG.textures.Texture;
 
 import java.nio.IntBuffer;
 
@@ -28,6 +27,7 @@ public class App {
     private long window;
 
     private Level level;
+    private Triangle triangle;
 
     /**
      * Start in the new thread
@@ -49,13 +49,17 @@ public class App {
         init();
         loop();
 
+        // Properly de-allocate all resources once they've outlived their purpose
+        glDeleteVertexArrays(1);
+        glDeleteBuffers(1);
+
         // Free the window callbacks and destroy the window
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+//        glfwSetErrorCallback(null).free();
     }
 
     /**
@@ -64,19 +68,21 @@ public class App {
     private void init() {
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
-        GLFWErrorCallback.createPrint(System.err).set();
+//        GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
         if (!glfwInit())
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
+//        glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizablee
         // Set OpenGL 3.0 version
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        //Установка профайла для которого создается контекст
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create the window
         window = glfwCreateWindow(620, 620, "Fiction", NULL, NULL);
@@ -90,6 +96,7 @@ public class App {
 
         // Get the thread stack and push a new frame
         try (MemoryStack stack = stackPush()) {
+
             IntBuffer pWidth = stack.mallocInt(1); // int*
             IntBuffer pHeight = stack.mallocInt(1); // int*
 
@@ -119,10 +126,6 @@ public class App {
      */
     private void loop() {
 
-        int x1 = 0;
-        int x2 = 0;
-        int player_selected = 2;
-
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
         // LWJGL detects the context that is current in the current thread,
@@ -130,20 +133,10 @@ public class App {
         // bindings available for use.
         GL.createCapabilities();
 
-        // Don't forget to do it
-        glEnable(GL_TEXTURE_2D);
-
-        // Creating texture under the OpenGL context
-        Texture green_texture = new Texture("./src/main/resources/img/Neuron.png");
-        Texture activated_texture = new Texture("./src/main/resources/img/ActivatedNeuron.png");
-        Texture input_one_texture = new Texture("./src/main/resources/img/one.png");
-        Texture input_zero_texture = new Texture("./src/main/resources/img/zero.png");
-        Texture selected_input_one_texture = new Texture("./src/main/resources/img/selected_one.png");
-        Texture selected_input_zero_texture = new Texture("./src/main/resources/img/selecteed_zero.png");
-        // Texture selected_input_one_texture = new
-        // Texture("./src/resources/Neuron.png");
-        // Texture selected_input_zero_texture = new
-        // Texture("./src/resources/Neuron.png");
+        int error13 = glGetError();
+        if (error13 != GL_NO_ERROR) {
+            System.out.println(String.format("OpenGL error code хрен знает где: %d", error13));
+        }
 
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
@@ -151,238 +144,34 @@ public class App {
         glEnable(GL_DEPTH_TEST);
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
 
-
         this.level = new Level();
+        this.triangle = new Triangle();
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
         // projection matrix
         Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
 
-        Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
+//        Shader.BackGround.setUniformMat4f("viewProjMatrix", prMatrix);
 
 
-        float x = 0.3f;
-        float y = 0.0f;/*
-         * float red = 0.0f; float green = 0.0f; float blue = 0.0f;
-         */
+        int error11 = glGetError();
+        if (error11 != GL_NO_ERROR) {
+            System.out.println(String.format("OpenGL error code после: %d", error11));
+        }
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
         while (!glfwWindowShouldClose(window)) {
 
-            // Starting NeuralNet
-//            NeuralNet neuralNet = new NeuralNet(x1, x2);
-//            int result = neuralNet.start();
+            // Poll for window events. The key callback above will only be
+            // invoked during this call.
+            glfwPollEvents();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
-/*
 
-            glLineWidth(5);
-
-            glBegin(GL_LINES);
-
-            glVertex2d(-0.9f + x, 0.4f + y);
-            glVertex2d(-0.6f + x, 0.4f + y);
-
-            glVertex2d(-0.9f + x, -0.4f + y);
-            glVertex2d(-0.6f + x, -0.4f + y);
-
-            glVertex2d(-0.9f + x, 0.4f + y);
-            glVertex2d(-0.6f + x, -0.4f + y);
-
-            glVertex2d(-0.9f + x, -0.4f + y);
-            glVertex2d(-0.6f + x, 0.4f + y);
-
-            glVertex2d(-0.6f + x, 0.4f + y); // первая линия
-            glVertex2d(0 + x, 0 + y);
-
-            glVertex2d(-0.6f + x, -0.4f + y); // вторая линия
-            glVertex2d(0 + x, 0 + y);
-
-            glVertex2d(0.3f + x, 0f + y);
-            glVertex2d(0 + x, 0 + y);
-
-            glEnd();
-
-            // Now. we drowing a texture
-            if (neuralNet.get_one() == 0) {
-                green_texture.bind();
-            } else {
-                activated_texture.bind();
-            }
-            // firts up neuron
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(1f, 0.1f, 0.1f, 0f);
-            glVertex2f(-0.65f + x, 0.5f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(-0.50f + x, 0.5f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(-0.50f + x, 0.35f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(-0.65f + x, 0.35f + y);
-
-            glEnd();
-
-            // firts down neuron
-            if (neuralNet.get_two() == 0) {
-                green_texture.bind();
-            } else {
-                activated_texture.bind();
-            }
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(1f, 0.1f, 0.1f, 0f);
-            glVertex2f(-0.65f + x, -0.5f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(-0.50f + x, -0.5f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(-0.50f + x, -0.35f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(-0.65f + x, -0.35f + y);
-
-            glEnd();
-
-            // second neuron
-            if (result == 0) {
-                green_texture.bind();
-            } else {
-                activated_texture.bind();
-            }
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(0.5f, 0.1f, 0.1f, 0f);
-            glVertex2f(-0.05f + x, 0.08f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(0.1f + x, 0.08f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(0.1f + x, -0.07f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(-0.05f + x, -0.07f + y);
-
-            glEnd();
-
-            if (x1 == 1 && player_selected == 1) {
-
-                selected_input_one_texture.bind();
-            } else if (x1 == 1 && player_selected == 2) {
-                input_one_texture.bind();
-            } else if (x1 == 0 && player_selected == 1) {
-
-                selected_input_zero_texture.bind();
-            } else if (x1 == 0 && player_selected == 2) {
-
-                input_zero_texture.bind();
-            }
-
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(1f, 0.1f, 0.1f, 0f);
-            glVertex2f(-0.95f + x, 0.5f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(-0.80f + x, 0.5f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(-0.80f + x, 0.35f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(-0.95f + x, 0.35f + y);
-
-            glEnd();
-
-            if (x2 == 1 && player_selected == 2) {
-
-                selected_input_one_texture.bind();
-            } else if (x2 == 1 && player_selected == 1) {
-                input_one_texture.bind();
-            } else if (x2 == 0 && player_selected == 2) {
-
-                selected_input_zero_texture.bind();
-            } else if (x2 == 0 && player_selected == 1) {
-                input_zero_texture.bind();
-            }
-
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(1f, 0.1f, 0.1f, 0f);
-            glVertex2f(-0.95f + x, -0.35f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(-0.80f + x, -0.35f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(-0.80f + x, -0.5f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(-0.95f + x, -0.5f + y);
-
-            glEnd();
-
-            // out
-            if (result == 1) {
-                input_one_texture.bind();
-            } else {
-                input_zero_texture.bind();
-            }
-            glBegin(GL_QUADS);
-
-            // left up
-            glTexCoord2f(0, 0);
-            // glColor4f(0.5f, 0.1f, 0.1f, 0f);
-            glVertex2f(0.25f + x, 0.08f + y);
-
-            // right up
-            glTexCoord2f(1, 0);
-            glVertex2f(0.40f + x, 0.08f + y);
-
-            // right down
-            glTexCoord2f(1, 1);
-            glVertex2f(0.4f + x, -0.07f + y);
-
-            // left down
-            glTexCoord2f(0, 1);
-            glVertex2f(0.25f + x, -0.07f + y);
-
-            glEnd();
-
-*/
-            this.level.render();
+//            this.level.render();
+            this.triangle.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {
@@ -390,63 +179,6 @@ public class App {
             }
 
             glfwSwapBuffers(window); // swap the color buffers
-
-            // Poll for window events. The key callback above will only be
-            // invoked during this call.
-            glfwPollEvents();
-
-            // ESCAPE
-            if (Input.getKeyActionStatus(GLFW_KEY_ESCAPE)) {
-
-                glfwSetWindowShouldClose(window, true);
-                break;
-            }
-
-            // MOVING
-            // Вместо glfwGetKey(window, GLFW_KEY_ESCAPE) предпочтительнее использовать собственную обработку клавиш
-            if (Input.getKeyActionStatus(GLFW_KEY_D)) {
-
-                x += 0.01f;
-            }
-
-            if (Input.getKeyActionStatus(GLFW_KEY_A)) {
-
-                x -= 0.01f;
-            }
-
-            if (Input.getKeyActionStatus(GLFW_KEY_W)) {
-
-                if (player_selected == 2) {
-                    player_selected = 1;
-                }
-            }
-
-            if (Input.getKeyActionStatus(GLFW_KEY_S)) {
-
-                if (player_selected == 1) {
-                    player_selected = 2;
-                }
-            }
-
-            if (Input.getKeyActionStatus(GLFW_KEY_SPACE)) {
-
-                if (player_selected == 1) {
-                    if (x1 == 0)
-                        x1 = 1;
-                    else
-                        x1 = 0;
-                } else if (x2 == 0)
-                    x2 = 1;
-                else
-                    x2 = 0;
-            }
-
-            /*
-             * // Mouse 0 - left, 1 - right, 2 - scroll if(glfwGetMouseButton(window, 0) ==
-             * GL_TRUE) {
-             *
-             * red = 1f; }
-             */
         }
     }
 

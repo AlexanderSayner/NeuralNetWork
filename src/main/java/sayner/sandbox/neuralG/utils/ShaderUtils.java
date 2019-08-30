@@ -36,40 +36,49 @@ public class ShaderUtils {
      */
     private static int createShaderProgram(String vertex, String fragment) {
 
-        int program = glCreateProgram();
-
-        int vertexId = glCreateShader(GL_VERTEX_SHADER);
-        int fragmentId = glCreateShader(GL_FRAGMENT_SHADER);
+        // Создание шейдера
+        int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
         // Внимательнее на этом месте, привязка должна быть точной
-        glShaderSource(vertexId, vertex);
-        glShaderSource(fragmentId, fragment);
+        // Передача информации о созданном шейдере и его исходном коде
+        glShaderSource(vertexShader, vertex);
+        glShaderSource(fragmentShader, fragment);
 
-        glCompileShader(vertexId);
+        // Компиляция шейдера
+        glCompileShader(vertexShader);
         // Проверка успешности компиляции шейдера
-        if (glGetShaderi(vertexId, GL_COMPILE_STATUS) == GL_FALSE) {
+        if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Вершинный шейдер не скомпилировался");
-            System.err.println(glGetShaderInfoLog(vertexId));
+            System.err.println(glGetShaderInfoLog(vertexShader));
             return -1;
         }
 
-        glCompileShader(fragmentId);
-        if (glGetShaderi(fragmentId, GL_COMPILE_STATUS) == GL_FALSE) {
+        glCompileShader(fragmentShader);
+        if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == GL_FALSE) {
             System.err.println("Фрагментарный шейдер не скомпилировался");
-            System.err.println(glGetShaderInfoLog(fragmentId));
+            System.err.println(glGetShaderInfoLog(fragmentShader));
             return -1;
         }
 
-        glAttachShader(program, vertexId);
-        glAttachShader(program, fragmentId);
-        glLinkProgram(program);
-//        glValidateProgram(program);
+        // Создание шейдерной программы
+        int shaderProgram = glCreateProgram();
+
+        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, fragmentShader);
+        glLinkProgram(shaderProgram);
+
+        if (glGetProgrami(shaderProgram, GL_LINK_STATUS) == GL_FALSE) {
+            System.err.println("Ошибка при сборке шейдерной программы");
+            System.err.println(glGetShaderInfoLog(fragmentShader));
+            return -1;
+        }
 
         // Шейдерны больше не нужны, они уже загруженны в программу
-        glDeleteShader(vertexId);
-        glDeleteShader(fragmentId);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
 
-        return program;
+        return shaderProgram;
     }
 
 }

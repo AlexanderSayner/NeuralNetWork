@@ -21,6 +21,7 @@ public class Shader {
 
     // Перечислю все шейдеры, которые используются программой
     public static Shader BackGround;
+    public static Shader TriangleShader;
 
     private boolean enabled = false;
 
@@ -46,6 +47,7 @@ public class Shader {
     public static void loadAllShaders() {
 
         BackGround = new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
+        TriangleShader= new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
     }
 
     /**
