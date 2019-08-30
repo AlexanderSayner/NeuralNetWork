@@ -34,7 +34,7 @@ public class Level {
         this.background = new VertexArray(vertices, indices, textureCoordinates);
     }
 
-    public void render(){
+    public void render() {
 
         Shader.BackGround.enable();
         this.background.render();

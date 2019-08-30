@@ -25,6 +25,7 @@ public class Texture {
 
     /**
      * Загружает текстуру в OpenGL
+     *
      * @param filePath
      * @return
      */

@@ -106,6 +106,7 @@ public class Matrix4f implements MatrixI<Float> {
 
     /**
      * Умножение матриц
+     *
      * @param matrix
      * @return
      */
@@ -131,9 +132,9 @@ public class Matrix4f implements MatrixI<Float> {
         return result;
     }
 
-    public FloatBuffer toFloatBuffer(){
+    public FloatBuffer toFloatBuffer() {
 
-        FloatBuffer floatBuffer= BufferUtils.createFloatBuffer(SIZE);
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(SIZE);
         floatBuffer.put(elements);
 
         return floatBuffer;

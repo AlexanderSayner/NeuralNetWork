@@ -47,7 +47,7 @@ public class Shader {
     public static void loadAllShaders() {
 
         BackGround = new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
-        TriangleShader= new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
+        TriangleShader = new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
     }
 
     /**
