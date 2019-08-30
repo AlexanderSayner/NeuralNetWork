@@ -27,7 +27,7 @@ version '1.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
-mainClassName = 'sayner.sandbox.NeuralG.App'
+mainClassName = 'sayner.sandbox.neuralG.App'
 
 repositories {
     mavenCentral()
