@@ -7,7 +7,7 @@ import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.level.Level;
-import sayner.sandbox.neuralG.level.Triangle;
+import sayner.sandbox.neuralG.level.Figure;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 
 import java.nio.IntBuffer;
@@ -27,7 +27,7 @@ public class App {
     private long window;
 
     private Level level;
-    private Triangle triangle;
+    private Figure figure;
 
     /**
      * Start in the new thread
@@ -119,6 +119,8 @@ public class App {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Режим Wireframe
     }
 
     /**
@@ -133,19 +135,16 @@ public class App {
         // bindings available for use.
         GL.createCapabilities();
 
-        int error13 = glGetError();
-        if (error13 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code хрен знает где: %d", error13));
-        }
-
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
         // Вот не надо этого :)
         glEnable(GL_DEPTH_TEST);
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
 
+        System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
+
         this.level = new Level();
-        this.triangle = new Triangle();
+        this.figure = new Figure();
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
@@ -171,7 +170,7 @@ public class App {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
 //            this.level.render();
-            this.triangle.render();
+            this.figure.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {

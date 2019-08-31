@@ -6,8 +6,9 @@ import static org.lwjgl.opengl.GL30.*;
 
 /**
  * После инициализации объекта, для его использования требуется вызвать bind() в цикле отрисовки
+ * Пока не хочу, чтобы этот класс наследовали
  */
-public class VertexArray {
+public final class VertexArray {
 
     private int count; // Количество вершин
 
@@ -22,25 +23,34 @@ public class VertexArray {
      *
      * @param vertices
      */
-    public VertexArray(float[] vertices) {
+    public VertexArray(float[] vertices, byte[] indices) {
+
+        // Сохранить количество индексов (вершин на отрисовку), используется при вызове метода this.draw()
+        this.count = indices.length;
 
         // Создаётся VBO
         this.vbo = glGenBuffers();
 
         // Илициализация VAO
         this.vao = glGenVertexArrays();
-        // теперь VAO будет использоваться
+        // 1. теперь VAO будет использоваться
         glBindVertexArray(this.vao);
-        // Копируем наш массив вершин в буфер для OpenGL
+        // 2. Копируем наш массив вершин в буфер для OpenGL
         glBindBuffer(GL_ARRAY_BUFFER, this.vbo); // С этого момента любой вызов, использующий буфер, будет работать с VBO
         // Передаём вершины буфферу
         glBufferData(GL_ARRAY_BUFFER, BufferUtils.createFloatBuffer(vertices), GL_STATIC_DRAW);
 
-        // Устанавливаем указатели на вершинные атрибуты
+        // Создать буфер
+        this.ibo = glGenBuffers();
+        // 3. Связать его с типом буфера индексов
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, BufferUtils.createByteBuffer(indices), GL_STATIC_DRAW);
+
+        // 4. Устанавливаем указатели на вершинные атрибуты
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
         glEnableVertexAttribArray(0);
 
-        // Отвязываем VAO
+        // 5. Отвязываем VAO (НЕ IBO)
         glBindVertexArray(0);
     }
 
@@ -78,25 +88,34 @@ public class VertexArray {
         glBindVertexArray(0);
     }
 
-    public void bind() {
+    /**
+     * Сначала всегда нужно привязать данные к памяти
+     */
+    private void bind() {
 
         glBindVertexArray(this.vao);
-//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo); // Это слишком сложно
     }
 
-    public void draw() {
+    /**
+     * Отрисовывает, требует привязки необходимых данных в памыти
+     */
+    private void draw() {
 
-//        glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Сложно
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+//        glDrawArrays(GL_TRIANGLES, 0, 3); // Для отсивки простого треугольника
+        glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Сложно
     }
 
+    /**
+     * Отвязать всё, что использовалось
+     */
     public void unbind() {
 
-        // Отвязываем VAO
         glBindVertexArray(0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
+    /**
+     * Функция объеденяет в себе привязку данных и их отрисовку. неоходимо атем отвязать данные
+     */
     public void render() {
 
         bind();
