@@ -138,10 +138,22 @@ public class App {
         // bindings available for use.
         GL.createCapabilities();
 
+        int error121 = glGetError();
+        if (error121 != GL_NO_ERROR) {
+            System.out.println(String.format("OpenGL error code при инициализации: %d", error121));
+        }
+
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
         // Вот не надо этого :)
-        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
+
+        glActiveTexture(GL_TEXTURE0);
+
+        int error1231 = glGetError();
+        if (error1231 != GL_NO_ERROR) {
+            System.out.println(String.format("OpenGL error code при инициализации: %d", error1231));
+        }
 
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
 
@@ -157,8 +169,8 @@ public class App {
         Matrix4f identity = Matrix4f.identity();
         Shader.TriangleShader.setUniformMat4f("projectionMatrix", identity);
 
-        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-//        Matrix4f prMatrix = Matrix4f.identity();
+//        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+        Matrix4f prMatrix = Matrix4f.identity();
         // Вот это вот всё добро уходит в шейдеры
         Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
         Shader.BackGround.setUniform1i("tex", 1); // Местоположение тестурного семплера
@@ -168,7 +180,7 @@ public class App {
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code после: %d", error11));
+            System.out.println(String.format("OpenGL error code при инициализации: %d", error11));
         }
 
         // Run the rendering loop until the user has attempted to close

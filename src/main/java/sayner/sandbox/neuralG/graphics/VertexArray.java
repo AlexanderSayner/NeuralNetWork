@@ -58,7 +58,7 @@ public final class VertexArray {
         glEnableVertexAttribArray(1); // Вот тот самый индекс layout в шейдере
 
         // Текстура
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * 4, 6 * 4);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * 4, 3 * 2 * 4);
         glEnableVertexAttribArray(2);
 
         // 5. Отвязываем VAO (НЕ IBO)
@@ -115,7 +115,7 @@ public final class VertexArray {
     private void draw() {
 
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // Для отсивки простого треугольника
-        glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Сложно
+        glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Для отрисовки сложных фигур
     }
 
     /**

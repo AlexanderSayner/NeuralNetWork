@@ -20,7 +20,7 @@ public class Texture {
 
     public Texture(String filePath) {
 
-        textureId = load(filePath);
+        this.textureId = load(filePath);
     }
 
     /**
@@ -60,10 +60,10 @@ public class Texture {
 
         for (int i = 0; i < width * height; i++) {
 
-            int a = (pixels[i] & 0xff000000) >> 24;
-            int r = (pixels[i] & 0xff0000) >> 16;
-            int g = (pixels[i] & 0xff00) >> 8;
-            int b = (pixels[i] & 0xff);
+            int a = (pixels[i] & 0xff000000) >> 24; // ALPHA
+            int r = (pixels[i] & 0xff0000) >> 16; // RED
+            int g = (pixels[i] & 0xff00) >> 8; // GREEN
+            int b = (pixels[i] & 0xff); // BLUE
 
             data[i] = a << 24 | b << 16 | g << 8 | r;
         }
@@ -73,8 +73,11 @@ public class Texture {
         // Связываем текстуру с контекстом
         glBindTexture(GL_TEXTURE_2D, result); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
 
+        //tell opengl how to unpack bytes
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
         // Set our texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);    // Set texture wrapping to GL_REPEAT
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         // Set texture filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
