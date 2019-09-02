@@ -10,7 +10,6 @@ import sayner.sandbox.neuralG.level.Figure;
 import sayner.sandbox.neuralG.level.Level;
 import sayner.sandbox.neuralG.level.SecondFigure;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
-import sayner.sandbox.neuralG.maths.impl.Vector4f;
 
 import java.nio.IntBuffer;
 
