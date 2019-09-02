@@ -13,10 +13,10 @@ public class Level {
 
         // Let's go
         float[] vertices = new float[] {
-                -10.0f, -10.0f * 9.0f / 16.0f, 0.0f,
-                -10.0f,  10.0f * 9.0f / 16.0f, 0.0f,
-                0.0f,  10.0f * 9.0f / 16.0f, 0.0f,
-                0.0f, -10.0f * 9.0f / 16.0f, 0.0f
+                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+                -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.0f,   0.0f, 1.0f,  // Top Left
+                0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+                0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
         };
 
         byte[] indices = new byte[] {
@@ -24,15 +24,7 @@ public class Level {
                 2, 3, 0
         };
 
-        float[] textureCoordinates = new float[] {
-                0, 1,
-                0, 0,
-                1, 0,
-                1, 1
-        };
-
-
-        this.background = new VertexArray(vertices, indices, textureCoordinates);
+        this.background = new VertexArray(vertices, indices);
         this.bgTexture = new Texture("./src/main/resources/img/bg.jpeg");
 //        this.bgTexture = new Texture("./src/main/resources/img/one.png");
     }

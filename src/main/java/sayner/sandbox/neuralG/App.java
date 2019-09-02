@@ -148,7 +148,7 @@ public class App {
         // Вот не надо этого :)
         glEnable(GL_TEXTURE_2D);
 
-        glActiveTexture(GL_TEXTURE0);
+        glActiveTexture(GL_TEXTURE1);
 
         int error1231 = glGetError();
         if (error1231 != GL_NO_ERROR) {
@@ -193,8 +193,8 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
-//            this.level.render();
-            this.secondFigure.render();
+            this.level.render();
+//            this.secondFigure.render();
 //            this.figure.render();
 
             int error = glGetError();
