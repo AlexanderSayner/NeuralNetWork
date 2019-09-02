@@ -6,8 +6,9 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
+import sayner.sandbox.neuralG.level.Figure;
 import sayner.sandbox.neuralG.level.Level;
-import sayner.sandbox.neuralG.level.Triangle;
+import sayner.sandbox.neuralG.level.SecondFigure;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector4f;
 
@@ -28,7 +29,8 @@ public class App {
     private long window;
 
     private Level level;
-    private Triangle triangle;
+    private Figure figure;
+    private SecondFigure secondFigure;
 
     /**
      * Start in the new thread
@@ -105,10 +107,10 @@ public class App {
             glfwGetWindowSize(window, pWidth, pHeight);
 
             // Get the resolution of the primary monitor
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            GLFWVidMode videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
             // Center the window
-            glfwSetWindowPos(window, (vidmode.width() - pWidth.get(0)) / 2, (vidmode.height() - pHeight.get(0)) / 2);
+            glfwSetWindowPos(window, (videoMode.width() - pWidth.get(0)) / 2, (videoMode.height() - pHeight.get(0)) / 2);
         } // the stack frame is popped automatically
 
         // Make the OpenGL context current
@@ -120,6 +122,8 @@ public class App {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+
+//        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Режим Wireframe
     }
 
     /**
@@ -134,28 +138,33 @@ public class App {
         // bindings available for use.
         GL.createCapabilities();
 
-        int error13 = glGetError();
-        if (error13 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code хрен знает где: %d", error13));
-        }
-
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
         // Вот не надо этого :)
         glEnable(GL_DEPTH_TEST);
+
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
 
+        System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте это %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
+
         this.level = new Level();
-        this.triangle = new Triangle();
+        this.figure = new Figure();
+        this.secondFigure = new SecondFigure();
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
         // projection matrix
-        Matrix4f projectionMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-        Shader.TriangleShader.setUniformMat4f("projectionMatrix", projectionMatrix);
+        Matrix4f identity = Matrix4f.identity();
+        Shader.TriangleShader.setUniformMat4f("projectionMatrix", identity);
 
-        Vector4f triangleColorVector = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
-        Shader.TriangleShader.setUniform4f("ourColor", triangleColorVector);
+        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+//        Matrix4f prMatrix = Matrix4f.identity();
+        // Вот это вот всё добро уходит в шейдеры
+        Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
+        Shader.BackGround.setUniform1i("tex", 1); // Местоположение тестурного семплера
+
+//        Vector4f triangleColorVector = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
+//        Shader.TriangleShader.setUniform4f("ourColor", triangleColorVector);
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
@@ -173,7 +182,8 @@ public class App {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
 //            this.level.render();
-            this.triangle.render();
+            this.secondFigure.render();
+//            this.figure.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {

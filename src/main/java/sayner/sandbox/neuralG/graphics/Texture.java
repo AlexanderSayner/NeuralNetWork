@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 /**
  * Проекция текстуры
@@ -39,6 +39,7 @@ public class Texture {
             this.width = image.getWidth();
             this.height = image.getHeight();
             pixels = new int[height * width];
+
             image.getRGB(
                     0, 0, width, height, pixels, 0, width
             );
@@ -67,15 +68,22 @@ public class Texture {
             data[i] = a << 24 | b << 16 | g << 8 | r;
         }
 
+        // Генерация текстуры
         int result = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, result);
+        // Связываем текстуру с контекстом
+        glBindTexture(GL_TEXTURE_2D, result); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        // Set our texture parameters
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        // Set texture filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BufferUtils.createIntegerBuffer(data));
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
 
         return result;
     }
