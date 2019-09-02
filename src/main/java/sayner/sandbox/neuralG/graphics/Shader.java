@@ -2,6 +2,7 @@ package sayner.sandbox.neuralG.graphics;
 
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
+import sayner.sandbox.neuralG.maths.impl.Vector4f;
 import sayner.sandbox.neuralG.utils.ShaderUtils;
 
 import java.util.HashMap;
@@ -102,6 +103,12 @@ public class Shader {
 
         if (!this.enabled) enable();
         glUniform3f(getUniform(name), vector.X(), vector.Y(), vector.Z());
+    }
+
+    public void setUniform4f(String name, Vector4f vector) {
+
+        if (!this.enabled) enable();
+        glUniform4f(getUniform(name), vector.X(), vector.Y(), vector.Z(), vector.A());
     }
 
     public void setUniformMat4f(String name, Matrix4f matrix) {

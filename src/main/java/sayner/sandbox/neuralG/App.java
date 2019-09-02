@@ -9,6 +9,7 @@ import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.level.Level;
 import sayner.sandbox.neuralG.level.Triangle;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
+import sayner.sandbox.neuralG.maths.impl.Vector4f;
 
 import java.nio.IntBuffer;
 
@@ -150,10 +151,11 @@ public class App {
         Shader.loadAllShaders();
 
         // projection matrix
-        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+        Matrix4f projectionMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+        Shader.TriangleShader.setUniformMat4f("projectionMatrix", projectionMatrix);
 
-//        Shader.BackGround.setUniformMat4f("viewProjMatrix", prMatrix);
-
+        Vector4f triangleColorVector = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
+        Shader.TriangleShader.setUniform4f("ourColor", triangleColorVector);
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
