@@ -10,6 +10,7 @@ public class Level {
     private Texture bgTexture;
 
     public Level() {
+/*
 
         // Let's go
         float[] vertices = new float[] {
@@ -17,6 +18,15 @@ public class Level {
                 -1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  // Top Left
                 0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f,   1.0f, 0.0f, // Top Right
                 0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // Bottom Right
+        };
+*/
+
+        // Let's go
+        float[] vertices = new float[] {
+                -10.0f, -10.0f * 9.0f / 16.0f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 1.0f, // Bottom Left
+                -10.0f,  10.0f * 9.0f / 16.0f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 0.0f,  // Top Left
+                  0.0f,  10.0f * 9.0f / 16.0f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 0.0f, // Top Right
+                  0.0f, -10.0f * 9.0f / 16.0f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 1.0f, // Bottom Right
         };
 
         byte[] indices = new byte[] {

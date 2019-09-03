@@ -168,8 +168,8 @@ public class App {
         Matrix4f identity = Matrix4f.identity();
         Shader.TriangleShader.setUniformMat4f("projectionMatrix", identity);
 
-//        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-        Matrix4f prMatrix = Matrix4f.identity();
+        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
+//        Matrix4f prMatrix = Matrix4f.identity();
         // Вот это вот всё добро уходит в шейдеры
         Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
         Shader.BackGround.setUniform1i("tex", 1); // Местоположение тестурного семплера
