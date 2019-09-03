@@ -14,6 +14,8 @@ public class Level {
     private VertexArray background;
     private Texture bgTexture;
 
+    private Bird bird;
+
     // Horizontal scroll
     private int xScroll = 0;
     private int map = 0;
@@ -45,6 +47,8 @@ public class Level {
 
         this.background = new VertexArray(vertices, indices, textureCoordinates);
         this.bgTexture = new Texture("./src/main/resources/img/bg.jpeg");
+
+        this.bird=new Bird();
     }
 
     public void update() {
@@ -54,6 +58,8 @@ public class Level {
         if (-xScroll % 335 == 0) {
             map++;
         }
+
+        this.bird.update();
     }
 
     /**
@@ -71,7 +77,8 @@ public class Level {
 
         for (int i = map; i < map + 3; i++) {
 
-            Shader.BackGround.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(i * 10 + xScroll*0.03f, 0.0f, 0.0f)));            // Теперь его надо "завести"
+            Shader.BackGround.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(i * 10 + xScroll*0.03f, 0.0f, 0.0f)));
+            // Теперь его надо "завести"
             this.background.draw();
         }
 
@@ -79,5 +86,7 @@ public class Level {
         this.background.unbind();
         Shader.BackGround.disable();
         this.bgTexture.unbind();
+
+        this.bird.render();
     }
 }

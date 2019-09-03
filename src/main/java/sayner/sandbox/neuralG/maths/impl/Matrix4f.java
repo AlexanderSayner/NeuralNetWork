@@ -54,9 +54,9 @@ public class Matrix4f {
 
         Matrix4f result = identity();
 
-        result.elements[0 + 3 * 4] = vector.X();
-        result.elements[1 + 3 * 4] = vector.Y();
-        result.elements[2 + 3 * 4] = vector.Z();
+        result.elements[0 + 3 * 4] = vector.x;
+        result.elements[1 + 3 * 4] = vector.y;
+        result.elements[2 + 3 * 4] = vector.z;
 
         return result;
     }

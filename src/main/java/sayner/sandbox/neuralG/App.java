@@ -90,7 +90,7 @@ public class App {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create the window
-        window = glfwCreateWindow(620, 620, "Fiction", NULL, NULL);
+        window = glfwCreateWindow(920, 620, "Fiction", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -174,10 +174,15 @@ public class App {
         Shader.TriangleShader.setUniformMat4f("projectionMatrix", identity);
 
         Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
-//        Matrix4f prMatrix = Matrix4f.identity();
         // Вот это вот всё добро уходит в шейдеры
         Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
         Shader.BackGround.setUniform1i("tex", 1); // Местоположение тестурного семплера
+
+        Shader.Bird.setUniformMat4f("pr_matrix", prMatrix);
+        Shader.Bird.setUniform1i("tex", 1);
+
+        Shader.Pipe.setUniformMat4f("pr_matrix", prMatrix);
+        Shader.Pipe.setUniform1i("tex", 1);
 
 //        Vector4f triangleColorVector = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
 //        Shader.TriangleShader.setUniform4f("ourColor", triangleColorVector);

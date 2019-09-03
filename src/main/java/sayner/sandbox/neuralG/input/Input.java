@@ -34,4 +34,8 @@ public class Input implements GLFWKeyCallbackI {
 
         keysAndActions[key] = action != GLFW_RELEASE;
     }
+
+    public static boolean isKeyDown(int keycode){
+        return keysAndActions[keycode];
+    }
 }

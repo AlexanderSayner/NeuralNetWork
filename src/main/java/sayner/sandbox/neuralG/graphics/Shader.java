@@ -23,6 +23,8 @@ public class Shader {
     // Перечислю все шейдеры, которые используются программой
     public static Shader BackGround;
     public static Shader TriangleShader;
+    public static Shader Bird;
+    public static Shader Pipe;
 
     private boolean enabled = false;
 
@@ -49,6 +51,8 @@ public class Shader {
 
         BackGround = new Shader("./src/main/resources/shader/bg_vert.glsl", "./src/main/resources/shader/bg_frag.glsl");
         TriangleShader = new Shader("./src/main/resources/shader/triangle_vert.glsl", "./src/main/resources/shader/triangle_frag.glsl");
+        Bird = new Shader("./src/main/resources/shader/bird_vert.glsl", "./src/main/resources/shader/bird_frag.glsl");
+        Pipe = new Shader("./src/main/resources/shader/pipe_vert.glsl", "./src/main/resources/shader/pipe_frag.glsl");
     }
 
     /**
@@ -102,13 +106,13 @@ public class Shader {
     public void setUniform3f(String name, Vector3f vector) {
 
         if (!this.enabled) enable();
-        glUniform3f(getUniform(name), vector.X(), vector.Y(), vector.Z());
+        glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
     }
 
     public void setUniform4f(String name, Vector4f vector) {
 
         if (!this.enabled) enable();
-        glUniform4f(getUniform(name), vector.X(), vector.Y(), vector.Z(), vector.A());
+        glUniform4f(getUniform(name), vector.x, vector.y, vector.z, vector.a);
     }
 
     public void setUniformMat4f(String name, Matrix4f matrix) {
