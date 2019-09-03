@@ -104,7 +104,7 @@ public final class VertexArray {
     /**
      * Сначала всегда нужно привязать данные к памяти
      */
-    private void bind() {
+    public void bind() {
 
         glBindVertexArray(this.vao);
     }
@@ -112,7 +112,7 @@ public final class VertexArray {
     /**
      * Отрисовывает, требует привязки необходимых данных в памыти
      */
-    private void draw() {
+    public void draw() {
 
 //        glDrawArrays(GL_TRIANGLES, 0, 3); // Для отсивки простого треугольника
         glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Для отрисовки сложных фигур

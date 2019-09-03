@@ -10,6 +10,7 @@ import sayner.sandbox.neuralG.level.Figure;
 import sayner.sandbox.neuralG.level.Level;
 import sayner.sandbox.neuralG.level.SecondFigure;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
+import sayner.sandbox.neuralG.timer.Delay;
 
 import java.nio.IntBuffer;
 
@@ -48,7 +49,9 @@ public class App {
 
         System.out.println(String.format("Hello LWJGL %s!", Version.getVersion()));
 
+        // Функция инициализации всего, что будет необходимо OpenGL
         init();
+        // Цикл отрисовки
         loop();
 
         // Properly de-allocate all resources once they've outlived their purpose
@@ -139,19 +142,21 @@ public class App {
 
         int error121 = glGetError();
         if (error121 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code при инициализации: %d", error121));
+            System.out.println(String.format("OpenGL error code при инициализации 1: %d", error121));
         }
 
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
         // Вот не надо этого :)
-        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_DEPTH_TEST);
+        // So if you use a modern opengl which has custom shaders, its option won't work ,and you won't need it.
+        // glEnable(GL_TEXTURE_2D);
 
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE1); // Где прописан номер текстуры? Когда её автирировать?
 
         int error1231 = glGetError();
         if (error1231 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code при инициализации: %d", error1231));
+            System.out.println(String.format("OpenGL error code при инициализации 2: %d", error1231));
         }
 
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
@@ -179,8 +184,11 @@ public class App {
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
-            System.out.println(String.format("OpenGL error code при инициализации: %d", error11));
+            System.out.println(String.format("OpenGL error code при инициализации 3: %d", error11));
         }
+
+        // Для того, чтобы удержать скорость перемежение картинки на заднем плане
+        Delay delay = new Delay();
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -191,6 +199,11 @@ public class App {
             glfwPollEvents();
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
+
+            // Спорно, зато код намного чище
+            delay.gap(() -> {
+                this.level.update();
+            });
 
             this.level.render();
 //            this.secondFigure.render();

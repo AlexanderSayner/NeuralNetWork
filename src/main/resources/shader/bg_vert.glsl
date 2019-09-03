@@ -3,7 +3,8 @@
 layout (location = 0) in vec3 position; // Устанавливаем позиция переменной с координатами в 0
 layout (location = 1) in vec2 textire_coordinates;
 
-uniform mat4 pr_matrix;
+uniform mat4 pr_matrix; // В main классе
+uniform mat4 view_matrix; // В Level класе
 
 out DATA
 {
@@ -12,6 +13,6 @@ out DATA
 
 void main()
 {
-    gl_Position = pr_matrix * vec4(position.x, position.y, position.z, 1.0);
+    gl_Position = pr_matrix * view_matrix * vec4(position.x, position.y, position.z, 1.0);
     vs_out.textire_coordinates = textire_coordinates;
 }
