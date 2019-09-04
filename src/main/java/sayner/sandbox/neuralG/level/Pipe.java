@@ -44,6 +44,34 @@ public class Pipe {
 
         this.position.x=x;
         this.position.y=y;
-        this.mlMatrix=Matrix4f
+        this.mlMatrix=Matrix4f.translate(this.position);
+    }
+
+    public float getY(){
+        return this.position.y;
+    }
+
+    public float getX(){
+        return this.position.x;
+    }
+
+    public Matrix4f getMlMatrix() {
+        return mlMatrix;
+    }
+
+    public static Texture getTexture() {
+        return texture;
+    }
+
+    public static VertexArray getMesh() {
+        return mesh;
+    }
+
+    public static float getWidth() {
+        return width;
+    }
+
+    public static float getHeight() {
+        return height;
     }
 }

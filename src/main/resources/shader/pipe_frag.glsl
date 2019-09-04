@@ -8,10 +8,16 @@ in DATA
 } fg_in;
 
 uniform sampler2D tex;
+uniform int top;
 
 void main()
 {
-    color = texture(tex, fg_in.textire_coordinates);
+    vec2 tc = fg_in.textire_coordinates;
+    if (top == 1)
+        tc.y = 1.0 - fg_in.textire_coordinates.y;
+
+    color = texture(tex, tc);
+
     if (color.w < 1.0)
-    discard;
+        discard;
 }

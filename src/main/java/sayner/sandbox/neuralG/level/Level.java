@@ -6,6 +6,8 @@ import sayner.sandbox.neuralG.graphics.VertexArray;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
 
+import java.util.Random;
+
 /**
  * Класс отрисовки фона уровня
  */
@@ -15,6 +17,11 @@ public class Level {
     private Texture bgTexture;
 
     private Bird bird;
+
+    private Pipe[] pipes = new Pipe[10];
+    private int index = 0;
+
+    private Random random = new Random();
 
     // Horizontal scroll
     private int xScroll = 0;
@@ -48,7 +55,25 @@ public class Level {
         this.background = new VertexArray(vertices, indices, textureCoordinates);
         this.bgTexture = new Texture("./src/main/resources/img/bg.jpeg");
 
-        this.bird=new Bird();
+        this.bird = new Bird();
+
+        createPipes();
+    }
+
+    private void createPipes() {
+
+        Pipe.create();
+
+        for (int i = 0; i < 5 * 2; i += 2) {
+            this.pipes[i] = new Pipe(index * 3.0f, this.random.nextFloat() * 4.0f);
+            this.pipes[i + 1] = new Pipe(this.pipes[i].getX(), pipes[i].getY() - 13.0f);
+            index += 2;
+        }
+    }
+
+    public void updatePipes() {
+
+//        this.pipes
     }
 
     public void update() {
@@ -60,6 +85,24 @@ public class Level {
         }
 
         this.bird.update();
+    }
+
+    public void renderPipes() {
+
+        Shader.Pipe.enable();
+        Shader.Pipe.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(this.xScroll * 0.03f, 0.0f, 0.0f)));
+        Pipe.getTexture().bind();
+        Pipe.getMesh().bind();
+
+        for (int i = 0; i < 5 * 2; i++) {
+
+            Shader.Pipe.setUniformMat4f("ml_matrix", this.pipes[i].getMlMatrix());
+            Shader.Pipe.setUniform1i("top",i%2==0?1:0);
+            Pipe.getMesh().draw();
+        }
+
+        Pipe.getMesh().unbind();
+        Pipe.getTexture().unbind();
     }
 
     /**
@@ -77,7 +120,7 @@ public class Level {
 
         for (int i = map; i < map + 3; i++) {
 
-            Shader.BackGround.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(i * 10 + xScroll*0.03f, 0.0f, 0.0f)));
+            Shader.BackGround.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(i * 10 + xScroll * 0.03f, 0.0f, 0.0f)));
             // Теперь его надо "завести"
             this.background.draw();
         }
@@ -87,6 +130,7 @@ public class Level {
         Shader.BackGround.disable();
         this.bgTexture.unbind();
 
+        renderPipes();
         this.bird.render();
     }
 }
