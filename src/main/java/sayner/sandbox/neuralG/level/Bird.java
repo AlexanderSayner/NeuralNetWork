@@ -26,10 +26,10 @@ public class Bird {
 
         // Let's go
         float[] vertices = new float[]{
-                -SIZE / 2.0f, -SIZE / 2.0f, 0.1f,
-                -SIZE / 2.0f, SIZE / 2.0f, 0.1f,
-                SIZE / 2.0f, SIZE / 2.0f, 0.1f,
-                SIZE / 2.0f, -SIZE / 2.0f, 0.1f,
+                -SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
+                -SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
+                 SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
+                 SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
         };
 
         byte[] indices = new byte[]{
