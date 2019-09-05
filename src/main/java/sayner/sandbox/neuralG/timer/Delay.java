@@ -7,10 +7,16 @@ public class Delay {
 
     long lastTime = System.nanoTime();
     double delta = 0.0;
-    double ns = 1000000000.0 / 60.0;
+    private final float framerate;
+    double ns;
     long timer = System.currentTimeMillis();
     int updates = 0;
     int frames = 0;
+
+    public Delay(float framerate) {
+        this.framerate = framerate;
+        this.ns = 1000000000.0 / this.framerate;
+    }
 
     public void gap(Update update){
 

@@ -193,7 +193,7 @@ public class App {
         }
 
         // Для того, чтобы удержать скорость перемежение картинки на заднем плане
-        Delay delay = new Delay();
+        Delay delay = new Delay(60);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.

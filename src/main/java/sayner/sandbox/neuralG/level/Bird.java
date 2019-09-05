@@ -1,13 +1,13 @@
 package sayner.sandbox.neuralG.level;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Texture;
 import sayner.sandbox.neuralG.graphics.VertexArray;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
 
 public class Bird {
 
@@ -27,9 +27,9 @@ public class Bird {
         // Let's go
         float[] vertices = new float[]{
                 -SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
-                -SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
-                 SIZE / 2.0f,  SIZE / 2.0f, 0.2f,
-                 SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
+                -SIZE / 2.0f, SIZE / 2.0f, 0.2f,
+                SIZE / 2.0f, SIZE / 2.0f, 0.2f,
+                SIZE / 2.0f, -SIZE / 2.0f, 0.2f,
         };
 
         byte[] indices = new byte[]{
@@ -54,15 +54,16 @@ public class Bird {
         if (Input.isKeyDown(GLFW_KEY_SPACE)) {
             fall();
         } else {
-            this.delta += 0.01f;
+            this.delta += 0.008f;
         }
 
         this.rotation = -this.delta * 90.0f;
     }
 
-    private void fall() {
+    public void fall() {
 
-        this.delta -= 0.15f;
+        // hardness
+        this.delta -= 0.05f;
     }
 
     /**
@@ -75,5 +76,13 @@ public class Bird {
         this.texture.bind();
         mesh.render();
         Shader.Bird.disable();
+    }
+
+    public float getY() {
+        return this.position.y;
+    }
+
+    public float getSize() {
+        return this.SIZE;
     }
 }
