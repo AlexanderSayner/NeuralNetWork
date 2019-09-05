@@ -14,7 +14,7 @@ import sayner.sandbox.neuralG.timer.Delay;
 
 import java.nio.IntBuffer;
 
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import org.lwjgl.glfw.Callbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -59,7 +59,7 @@ public class App {
         glDeleteBuffers(1);
 
         // Free the window callbacks and destroy the window
-        glfwFreeCallbacks(window);
+        Callbacks.glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
 
         // Terminate GLFW and free the error callback
