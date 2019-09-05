@@ -1,8 +1,10 @@
 package sayner.sandbox.neuralG.level;
 
+import org.lwjgl.glfw.GLFW;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Texture;
 import sayner.sandbox.neuralG.graphics.VertexArray;
+import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
 
@@ -13,17 +15,20 @@ import java.util.Random;
  */
 public class Level {
 
-    private VertexArray background;
+    private VertexArray background, fade;
     private Texture bgTexture;
 
     private Bird bird;
     // is player controls the bird?
-    private boolean control = true;
+    private boolean control = true, reset = false;
 
     private Pipe[] pipes = new Pipe[10];
     private int index = 0;
 
+    // число для генерации положения труб
     private Random random = new Random();
+    // переменная времени в fade шейдере
+    private float time = 0.0f;
 
     private float OFFSET = 5.0f;
 
@@ -57,6 +62,8 @@ public class Level {
         };
 
         this.background = new VertexArray(vertices, indices, textureCoordinates);
+        this.fade = new VertexArray(6);
+
         this.bgTexture = new Texture("./src/main/resources/img/bg.jpeg");
 
         this.bird = new Bird();
@@ -102,12 +109,18 @@ public class Level {
             this.bird.fall();
             this.control = false;
         }
+
+        if (!this.control && Input.isKeyDown(GLFW.GLFW_KEY_SPACE))
+            this.reset = true;
+
+        this.time += 0.1f;
     }
 
     public void renderPipes() {
 
         Shader.Pipe.enable();
         Shader.Pipe.setUniformMat4f("view_matrix", Matrix4f.translate(new Vector3f(this.xScroll * 0.05f, 0.0f, 0.0f)));
+        Shader.Pipe.setUniform2f("pipe_light", 0, this.bird.getY());
         Pipe.getTexture().bind();
         Pipe.getMesh().bind();
 
@@ -150,6 +163,10 @@ public class Level {
         return false;
     }
 
+    public boolean isGameOver() {
+        return this.reset;
+    }
+
     /**
      * Цикл отрисовки картиночки на фоне
      */
@@ -159,6 +176,7 @@ public class Level {
         this.bgTexture.bind();
         // Надо надеяться, что эта штука инициализирована
         Shader.BackGround.enable();
+        Shader.BackGround.setUniform2f("bird", 0, this.bird.getY());
 
         // Связать
         this.background.bind();
@@ -177,5 +195,10 @@ public class Level {
 
         renderPipes();
         this.bird.render();
+
+        Shader.Fade.enable();
+        Shader.Fade.setUniform1f("time", this.time);
+        this.fade.render();
+        Shader.Fade.disable();
     }
 }

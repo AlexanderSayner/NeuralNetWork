@@ -5,10 +5,12 @@ out vec4 color;
 in DATA
 {
     vec2 textire_coordinates;
+    vec3 position;
 } fg_in;
 
 uniform sampler2D tex;
 uniform int top;
+uniform vec2 pipe_light;
 
 void main()
 {
@@ -20,4 +22,7 @@ void main()
 
     if (color.w < 1.0)
         discard;
+
+    color *= 3.0 / (length(pipe_light - fg_in.position.xy) + 4.5) + 0.55;
+    color.w = 1.0;
 }

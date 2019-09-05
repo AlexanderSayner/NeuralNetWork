@@ -9,10 +9,12 @@ uniform mat4 view_matrix; // В Level класе
 out DATA
 {
     vec2 textire_coordinates;
+    vec3 position;
 } vs_out;
 
 void main()
 {
     gl_Position = pr_matrix * view_matrix * vec4(position.x, position.y, position.z, 1.0);
     vs_out.textire_coordinates = textire_coordinates;
+    vs_out.position = vec3(view_matrix * vec4(position, 1.0));
 }

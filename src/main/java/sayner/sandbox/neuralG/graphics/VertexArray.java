@@ -18,6 +18,12 @@ public final class VertexArray {
     private int ibo; // Index Buffer Object
     private int tbo; // Texture Buffer ObjectПосле инициализации объекта, для его использования требуется вызвать bind() в цикле отрисовки
 
+    public VertexArray(int count) {
+
+        this.count = count;
+        this.vao = glGenVertexArrays();
+    }
+
     /**
      * Массив с вершинами несёт в себе информацию и о цвете
      * а. можно цвет напрямую в шейдере прописать
@@ -107,6 +113,9 @@ public final class VertexArray {
     public void bind() {
 
         glBindVertexArray(this.vao);
+        if (this.ibo > 0) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.ibo);
+        }
     }
 
     /**
@@ -114,8 +123,10 @@ public final class VertexArray {
      */
     public void draw() {
 
-//        glDrawArrays(GL_TRIANGLES, 0, 3); // Для отсивки простого треугольника
-        glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Для отрисовки сложных фигур
+        if (this.ibo > 0)
+            glDrawElements(GL_TRIANGLES, this.count, GL_UNSIGNED_BYTE, 0); // Для отрисовки сложных фигур
+        else
+            glDrawArrays(GL_TRIANGLES, 0, this.count);
     }
 
     /**
@@ -124,6 +135,10 @@ public final class VertexArray {
     public void unbind() {
 
         glBindVertexArray(0);
+
+        if (this.ibo > 0) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
     }
 
     /**

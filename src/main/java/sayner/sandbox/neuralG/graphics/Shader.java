@@ -25,6 +25,7 @@ public class Shader {
     public static Shader TriangleShader;
     public static Shader Bird;
     public static Shader Pipe;
+    public static Shader Fade;
 
     private boolean enabled = false;
 
@@ -53,6 +54,7 @@ public class Shader {
         TriangleShader = new Shader("./src/main/resources/shader/triangle_vert.glsl", "./src/main/resources/shader/triangle_frag.glsl");
         Bird = new Shader("./src/main/resources/shader/bird_vert.glsl", "./src/main/resources/shader/bird_frag.glsl");
         Pipe = new Shader("./src/main/resources/shader/pipe_vert.glsl", "./src/main/resources/shader/pipe_frag.glsl");
+        Fade = new Shader("./src/main/resources/shader/fade_vert.glsl", "./src/main/resources/shader/fade_frag.glsl");
     }
 
     /**

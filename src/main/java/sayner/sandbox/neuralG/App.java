@@ -146,13 +146,15 @@ public class App {
         }
 
         // Set the clear color
-        glClearColor(0.85f, 0.0f, 0.3f, 0.0f);
+        glClearColor(0.85f, 0.0f, 0.6f, 0.0f);
         // Вот не надо этого :)
         glEnable(GL_DEPTH_TEST);
         // So if you use a modern opengl which has custom shaders, its option won't work ,and you won't need it.
         // glEnable(GL_TEXTURE_2D);
 
         glActiveTexture(GL_TEXTURE1); // Где прописан номер текстуры? Когда её автирировать?
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         int error1231 = glGetError();
         if (error1231 != GL_NO_ERROR) {
@@ -208,6 +210,10 @@ public class App {
             // Спорно, зато код намного чище
             delay.gap(() -> {
                 this.level.update();
+
+                if (this.level.isGameOver()) {
+                    this.level = new Level();
+                }
             });
 
             this.level.render();
