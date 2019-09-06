@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'war'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -34,6 +35,10 @@ repositories {
 }
 
 dependencies {
+
+    // Apache library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
     // LWJGL
 
@@ -117,16 +122,16 @@ task fatJar(type: Jar) {
 
     from sourceSets.main.output
 
-    dependsOn configurations.compileClasspath
+    dependsOn configurations.runtimeClasspath
+
     from {
-        configurations.compileClasspath.findAll { it.getName() }.collect { zipTree(it) }
+        configurations.runtimeClasspath.findAll { it.getName() }.collect { zipTree(it) }
     }
 
     manifest {
         attributes(
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                'Class-Path': configurations.compile.collect { it.getName() }.join(''),
                 'Main-Class': 'sayner.sandbox.neuralG.App'
         )
     }
 }
-

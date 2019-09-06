@@ -163,7 +163,7 @@ public class App {
 
         System.out.println(String.format("OpenGL version %s", glGetString(GL_VERSION)));
 
-        System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте это %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
+        System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте - %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
 
         this.level = new Level();
         this.figure = new Figure();
