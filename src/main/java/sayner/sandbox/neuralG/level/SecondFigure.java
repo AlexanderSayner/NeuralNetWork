@@ -4,6 +4,12 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Texture;
 import sayner.sandbox.neuralG.graphics.VertexArray;
 
+/**
+ * Пусть будет для примера
+ *
+ * @author uarchon
+ *
+ */
 public class SecondFigure {
 
     private final VertexArray body;
