@@ -177,7 +177,7 @@ public class App {
         this.figure = new Figure();
         this.axisX = new AxisX();
         this.axisY = new AxisY();
-        this.line = new Line();
+        this.line = new Line(0.00001f);
         this.divisions = new Divisions(0.1f);
         // Загружаем шейдеры
         Shader.loadAllShaders();
