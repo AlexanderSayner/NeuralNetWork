@@ -56,16 +56,12 @@ public final class VertexArray {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, BufferUtils.createByteBuffer(indices), GL_STATIC_DRAW);
 
         // 4. Устанавливаем указатели на вершинные атрибуты
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 8 * 4, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 6 * 4, 0);
         glEnableVertexAttribArray(0); // Вот тот самый индекс layout в шейдере
 
         // Цвет
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 8 * 4, 3 * 4);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 6 * 4, 3 * 4);
         glEnableVertexAttribArray(1); // Вот тот самый индекс layout в шейдере
-
-        // Текстура
-        glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * 4, 3 * 2 * 4);
-        glEnableVertexAttribArray(2);
 
         // 5. Отвязываем VAO (НЕ IBO)
         glBindVertexArray(0);

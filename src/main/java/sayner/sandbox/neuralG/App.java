@@ -1,22 +1,23 @@
 package sayner.sandbox.neuralG;
 
 import org.lwjgl.Version;
+import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
-import sayner.sandbox.neuralG.level.Figure;
-import sayner.sandbox.neuralG.level.Level;
-import sayner.sandbox.neuralG.level.SecondFigure;
-import sayner.sandbox.neuralG.maths.impl.Matrix4f;
-import sayner.sandbox.neuralG.timer.Delay;
+import sayner.sandbox.neuralG.level.*;
 
 import java.nio.IntBuffer;
 
-import org.lwjgl.glfw.Callbacks;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL20.GL_MAX_VERTEX_ATTRIBS;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -28,9 +29,11 @@ public class App {
     // The window handle
     private long window;
 
-    private Level level;
     private Figure figure;
-    private SecondFigure secondFigure;
+    private AxisX axisX;
+    private AxisY axisY;
+    private Line line;
+    private Divisions divisions;
 
     /**
      * Start in the new thread
@@ -90,7 +93,7 @@ public class App {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         // Create the window
-        window = glfwCreateWindow(920, 620, "Fiction", NULL, NULL);
+        window = glfwCreateWindow(620, 620, "Fiction", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
@@ -128,10 +131,7 @@ public class App {
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Режим Wireframe
     }
 
-    /**
-     * Цикл прорисовки
-     */
-    private void loop() {
+    private void setUpLoop() {
 
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
@@ -165,37 +165,29 @@ public class App {
 
         System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте - %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
 
-        this.level = new Level();
+    }
+
+    /**
+     * Цикл прорисовки
+     */
+    private void loop() {
+
+        setUpLoop();
+
         this.figure = new Figure();
-        this.secondFigure = new SecondFigure();
+        this.axisX = new AxisX();
+        this.axisY = new AxisY();
+        this.line = new Line();
+        this.divisions = new Divisions(0.1f);
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
-        // projection matrix
-        Matrix4f identity = Matrix4f.identity();
-        Shader.TriangleShader.setUniformMat4f("projectionMatrix", identity);
-
-        Matrix4f prMatrix = Matrix4f.orthogonal(-10.0f, 10.0f, -10.0f * 9.0f / 16.0f, 10.0f * 9.0f / 16.0f, -1.0f, 1.0f);
         // Вот это вот всё добро уходит в шейдеры
-        Shader.BackGround.setUniformMat4f("pr_matrix", prMatrix);
-        Shader.BackGround.setUniform1i("tex", 1); // Местоположение тестурного семплера
-
-        Shader.Bird.setUniformMat4f("pr_matrix", prMatrix);
-        Shader.Bird.setUniform1i("tex", 1);
-
-        Shader.Pipe.setUniformMat4f("pr_matrix", prMatrix);
-        Shader.Pipe.setUniform1i("tex", 1);
-
-//        Vector4f triangleColorVector = new Vector4f(0.0f, 1.0f, 0.0f, 1.0f);
-//        Shader.TriangleShader.setUniform4f("ourColor", triangleColorVector);
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
             System.out.println(String.format("OpenGL error code при инициализации 3: %d", error11));
         }
-
-        // Для того, чтобы удержать скорость перемежение картинки на заднем плане
-        Delay delay = new Delay(60);
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -207,18 +199,11 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
-            // Спорно, зато код намного чище
-            delay.gap(() -> {
-                this.level.update();
-
-                if (this.level.isGameOver()) {
-                    this.level = new Level();
-                }
-            });
-
-            this.level.render();
-//            this.secondFigure.render();
-//            this.figure.render();
+            //this.figure.render();
+            this.axisX.render();
+            this.axisY.render();
+            this.line.render();
+            this.divisions.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {
