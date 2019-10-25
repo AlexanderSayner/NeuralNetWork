@@ -7,6 +7,9 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.cos;
+
+import static java.lang.Math.sin;
 import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
 
 
@@ -14,67 +17,7 @@ public class Line {
 
     private final LineVertexArray body;
 
-    private float function(float x, float radius) {
-
-        float y = (float) Math.sqrt(radius * radius - x * x);
-
-        return y;
-    }
-
-    private float negativeFunction(float x, float radius) {
-
-        float y = -(float) Math.sqrt(radius * radius - x * x);
-
-        return y;
-    }
-
-    private List<Float> calculateGraph(float interval) {
-
-        List<Float> coordinates = new ArrayList<>();
-
-        float RADIUS = 0.64f;
-
-        for (float x = -1.0f; x <= 1.0f; x += interval) {
-
-            if (RADIUS * RADIUS - x * x < 0.0f)
-                continue;
-
-            coordinates.add(x); // X
-            coordinates.add(function(x, RADIUS)); // Y
-            coordinates.add(0.0f); // Z
-            coordinates.add(1.0f); // r
-            coordinates.add(1.0f); // g
-            coordinates.add(0.1f); // b
-        }
-
-        // а теперь с другого конца
-        for (float x = 1.0f; x >= -1.0f; x -= interval){
-
-            if (RADIUS * RADIUS - x * x < 0.0f)
-                continue;
-
-            coordinates.add(x); // X
-            coordinates.add(negativeFunction(x, RADIUS)); // Y
-            coordinates.add(0.0f); // Z
-            coordinates.add(1.0f); // r
-            coordinates.add(1.0f); // g
-            coordinates.add(0.1f); // b
-        }
-
-            return coordinates;
-    }
-
     private float[] getGraph(List<Float> coordinates) {
-
-/*
-        float vertices[] = new float[]{
-                // Позиции             // Цвета
-                0.1f, function(0.1f), 0.0f, 1.0f, 1.0f, 0.1f,
-                -0.2f, function(-0.2f), 0.0f, 1.0f, 1.0f, 0.1f,
-                0.3f, function(0.3f), 0.0f, 1.0f, 1.0f, 0.1f
-        };
-
-*/
 
         int size = coordinates.size();
 
@@ -87,9 +30,35 @@ public class Line {
         return vertices;
     }
 
+    private float[] polarSystem() {
+
+//        float RADIUS = 0.6f;
+
+        List<Float> verticesList = new ArrayList<>();
+
+        for (float angle = 0.0f; angle < 2 * Math.PI; angle += (Math.PI / 1000)) {
+
+            float x = (float) ((1 + cos(angle)) * cos(angle));
+            float y = (float) ((1 + cos(angle)) * sin(angle));
+            float z = 0.0f;
+            float r = 1.0f;
+            float g = 1.0f;
+            float b = 0.1f;
+
+            verticesList.add(x/2.5f);
+            verticesList.add(y/2.5f);
+            verticesList.add(z);
+            verticesList.add(r);
+            verticesList.add(g);
+            verticesList.add(b);
+        }
+
+        return getGraph(verticesList);
+    }
+
     public Line(float interval) {
 
-        float vertices[] = this.getGraph(calculateGraph(interval));
+        float vertices[] = this.polarSystem();
 
         // Объект инициаплизирован
         this.body = new LineVertexArray(vertices);
