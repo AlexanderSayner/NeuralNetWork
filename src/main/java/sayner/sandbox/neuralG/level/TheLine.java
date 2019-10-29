@@ -6,6 +6,8 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.opengl.GL11.GL_LINE_LOOP;
+
 public class TheLine {
 
     private final LineVertexArray body;
@@ -36,7 +38,7 @@ public class TheLine {
         // Надо надеяться, что эта штука инициализирована
         Shader.TriangleShader.enable();
         // Теперь его надо "завести"
-        this.body.render();
+        this.body.render(GL_LINE_LOOP);
         // И убить
         this.body.unbind();
         Shader.TriangleShader.disable();
