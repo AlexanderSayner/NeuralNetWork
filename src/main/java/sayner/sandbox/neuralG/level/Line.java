@@ -45,8 +45,8 @@ public class Line {
             float g = 1.0f;
             float b = 0.1f;
 
-            verticesList.add(x/2.5f);
-            verticesList.add(y/2.5f);
+            verticesList.add(x/4.0f);
+            verticesList.add(y/4.0f);
             verticesList.add(z);
             verticesList.add(r);
             verticesList.add(g);
