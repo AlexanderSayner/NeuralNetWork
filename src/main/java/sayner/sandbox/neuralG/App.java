@@ -176,6 +176,7 @@ public class App {
 
         // Вот это вот всё добро уходит в шейдеры
         Shader.ImageShader.setUniform1i("ourTexture", 1);
+        Shader.ImageShader.setUniform1f("scale",0.5f);
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
