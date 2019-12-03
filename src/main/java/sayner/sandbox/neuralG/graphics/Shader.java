@@ -22,6 +22,7 @@ public class Shader {
 
     // Перечислю все шейдеры, которые используются программой
     public static Shader TriangleShader;
+    public static Shader ImageShader;
 
     private boolean enabled = false;
 
@@ -47,6 +48,8 @@ public class Shader {
     public static void loadAllShaders() {
 
         TriangleShader = new Shader("./src/main/resources/shader/triangle_vert.glsl", "./src/main/resources/shader/triangle_frag.glsl");
+//        ImageShader = new Shader("./src/main/resources/shader/triangle_vert.glsl", "./src/main/resources/shader/triangle_frag.glsl");
+        ImageShader=new Shader("./src/main/resources/shader/image_vert.glsl","./src/main/resources/shader/image_frag.glsl");
     }
 
     /**

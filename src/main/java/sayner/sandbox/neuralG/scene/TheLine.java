@@ -1,4 +1,4 @@
-package sayner.sandbox.neuralG.level;
+package sayner.sandbox.neuralG.scene;
 
 import sayner.sandbox.neuralG.graphics.LineVertexArray;
 import sayner.sandbox.neuralG.graphics.Shader;

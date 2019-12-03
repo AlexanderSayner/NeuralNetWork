@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.input.Input;
-import sayner.sandbox.neuralG.level.*;
+import sayner.sandbox.neuralG.scene.*;
 
 import java.nio.IntBuffer;
 
@@ -30,10 +30,6 @@ public class App {
     private long window;
 
     private Figure figure;
-    private Divisions divisions;
-    private Line line;
-    private AxisY axisY;
-    private AxisX axisX;
 
     /**
      * Start in the new thread
@@ -41,7 +37,7 @@ public class App {
     public void startGame() {
 
         // Сделано для того, чтобы OpenGL запускался в другом потоке (мультизадачность)
-        Thread thread=new Thread(this::run);
+        Thread thread = new Thread(this::run);
         thread.start();
     }
 
@@ -166,23 +162,20 @@ public class App {
         System.out.println(String.format("Максимальное количество 4-х компонентных вершин, которое можно передать видеокарте - %d", glGetInteger(GL_MAX_VERTEX_ATTRIBS)));
 
     }
-    
+
     /**
      * Цикл прорисовки
      */
     private void loop() {
 
-    	setUpLoop();
-        
+        setUpLoop();
+
         this.figure = new Figure();
-        this.divisions = new Divisions(0.1f);
-        this.line = new Line(0.00001f);
-        this.axisY=new AxisY();
-        this.axisX=new AxisX();
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
         // Вот это вот всё добро уходит в шейдеры
+        Shader.ImageShader.setUniform1i("ourTexture", 1);
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
@@ -195,11 +188,7 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
-            //this.figure.render();
-            this.axisY.render();
-            this.axisX.render();
-            this.divisions.render();
-            this.line.render();
+            this.figure.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {
