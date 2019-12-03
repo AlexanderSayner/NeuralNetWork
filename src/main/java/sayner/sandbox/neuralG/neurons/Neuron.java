@@ -8,7 +8,7 @@ package sayner.sandbox.neuralG.neurons;
  */
 public interface Neuron {
 
-    Integer summary();
+    Float summary();
 
     Boolean addNewSynapse(Synapse synapse);
 

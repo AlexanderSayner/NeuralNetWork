@@ -5,9 +5,9 @@ package sayner.sandbox.neuralG.neurons;
  */
 public interface Synapse {
 
-    Integer reduceWeight(Integer value);
+    Float reduceWeight(Float value);
 
-    Integer increaseWeight(Integer value);
+    Float increaseWeight(Float value);
 
-    Integer getWeight();
+    Float getWeight();
 }

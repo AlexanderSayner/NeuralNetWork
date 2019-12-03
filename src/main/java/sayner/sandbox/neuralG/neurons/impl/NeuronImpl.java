@@ -29,8 +29,8 @@ public class NeuronImpl implements Neuron {
     }
 
     @Override
-    public Integer summary() {
-        Integer result = 0;
+    public Float summary() {
+        Float result = 0.0f;
         for (Synapse synapse : this.synapseCollection) {
             result += synapse.getWeight();
         }

@@ -41,7 +41,7 @@ public class App {
     public void startGame() {
 
         // Сделано для того, чтобы OpenGL запускался в другом потоке (мультизадачность)
-        Thread thread = new Thread(this::run);
+        Thread thread=new Thread(this::run);
         thread.start();
     }
 
