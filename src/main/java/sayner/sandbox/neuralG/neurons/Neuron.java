@@ -14,8 +14,6 @@ public interface Neuron {
      */
     Float activate();
 
-    Float summary();
-
     Boolean addNewSynapse(Synapse synapse);
 
     Boolean deleteSynapse(Synapse synapse);

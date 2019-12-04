@@ -5,6 +5,8 @@ package sayner.sandbox.neuralG.neurons;
  */
 public interface Synapse {
 
+    Neuron neuron();
+
     Float reduceWeight(Float value);
 
     Float increaseWeight(Float value);

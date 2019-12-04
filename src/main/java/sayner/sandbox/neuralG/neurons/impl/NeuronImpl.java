@@ -1,5 +1,6 @@
 package sayner.sandbox.neuralG.neurons.impl;
 
+import sayner.sandbox.neuralG.neurons.Connection;
 import sayner.sandbox.neuralG.neurons.Neuron;
 import sayner.sandbox.neuralG.neurons.Synapse;
 
@@ -8,7 +9,7 @@ import java.util.LinkedList;
 
 public class NeuronImpl implements Neuron {
 
-    private final Collection<Synapse> synapseCollection;
+    private final Collection<Connection> synapseCollection;
 
     /**
      * По-умолчанию коллекция синапсов реалицуется связным списком,
