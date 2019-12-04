@@ -189,6 +189,7 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
+            this.figure.update();
             this.figure.render();
 
             int error = glGetError();
