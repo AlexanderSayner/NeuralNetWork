@@ -18,7 +18,7 @@ public class Figure {
     public Figure() {
 
         float vertices[] = {
-                // Позиции
+                // Вершины
                 -0.5f,  0.5f, 0.0f,
                 -0.5f, -0.5f, 0.0f,
                  0.5f, -0.5f, 0.0f,
@@ -29,13 +29,6 @@ public class Figure {
                 0, 1, 2,   // Первый треугольник
                 0, 2, 3,   // Второй треугольник
         };
-
-//        float[] textureCoordinates = new float[]{
-//                0.0f, 1.0f,
-//                0.0f, 0.0f,
-//                1.0f, 0.0f,
-//                1.0f, 1.0f,
-//        };
 
         float[] textureCoordinates = new float[]{
                 0.0f, 1.0f,
