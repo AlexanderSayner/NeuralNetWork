@@ -28,11 +28,29 @@ public class NeuronImpl implements Neuron {
         this.synapseCollection = synapseCollection;
     }
 
+
+    /**
+     *               1
+     * f(x) = -------------
+     *         1 + e^(-x)
+     * @param x - argument
+     * @return f(x)
+     */
+    private Float activationFunction(float x){
+
+        return (float)(1/(1+Math.exp(-x)));
+    }
+
+    @Override
+    public Float activate() {
+        return activationFunction(summary());
+    }
+
     @Override
     public Float summary() {
         Float result = 0.0f;
         for (Synapse synapse : this.synapseCollection) {
-            result += synapse.getWeight();
+            result += synapse.getWeight()*synapse.getValue();
         }
         return result;
     }

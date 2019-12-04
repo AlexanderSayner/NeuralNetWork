@@ -10,4 +10,6 @@ public interface Synapse {
     Float increaseWeight(Float value);
 
     Float getWeight();
+
+    Float getValue();
 }

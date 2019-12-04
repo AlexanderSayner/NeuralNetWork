@@ -8,6 +8,12 @@ package sayner.sandbox.neuralG.neurons;
  */
 public interface Neuron {
 
+    /**
+     * Логика
+     * @return
+     */
+    Float activate();
+
     Float summary();
 
     Boolean addNewSynapse(Synapse synapse);
