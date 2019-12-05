@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 public class NeuronImpl implements Neuron {
 
-    private final Collection<Connection> synapseCollection;
+    private final Collection<Synapse> synapseCollection;
 
     /**
      * По-умолчанию коллекция синапсов реалицуется связным списком,
@@ -47,7 +47,6 @@ public class NeuronImpl implements Neuron {
         return activationFunction(summary());
     }
 
-    @Override
     public Float summary() {
         Float result = 0.0f;
         for (Synapse synapse : this.synapseCollection) {

@@ -4,9 +4,9 @@ import java.util.List;
 
 public class NeuralNet {
 
-    private final List<Connection> inputLayer;
-    private final List<Connection> hiddenLayerOne;
-    private final List<Connection> outputLayer;
+    private final List<Neuron> inputLayer;
+    private final List<Neuron> hiddenLayerOne;
+    private final List<Neuron> outputLayer;
 
     public NeuralNet(List<Neuron> inputLayer, List<Neuron> hiddenLayerOne, List<Neuron> outputLayer) {
         this.inputLayer = inputLayer;
@@ -19,7 +19,7 @@ public class NeuralNet {
         for (Neuron neuron: inputLayer){
             neuron.activate();
             for (Neuron input: hiddenLayerOne){
-                input.
+//                input
             }
         }
     }

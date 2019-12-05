@@ -1,7 +1,6 @@
 package sayner.sandbox.neuralG.scene;
 
 import sayner.sandbox.neuralG.graphics.Shader;
-import sayner.sandbox.neuralG.graphics.Texture;
 import sayner.sandbox.neuralG.graphics.VertexArray;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
@@ -15,7 +14,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Figure {
 
     private final VertexArray body;
-    private final Texture texture;
+//    private final Texture texture;
     private Vector3f position = new Vector3f();
     private float delta = 0.0f;
     private float rotation = -this.delta * 90.0f;
@@ -26,17 +25,15 @@ public class Figure {
      */
     public Figure() {
 
-        float vertices[] = {
-                // Вершины
-                -0.5f, 0.5f, 0.0f,
-                -0.5f, -0.5f, 0.0f,
-                0.5f, -0.5f, 0.0f,
-                0.5f, 0.5f, 0.0f,
+        float[] vertices = new float[]{
+                -0.5f,  0.5f, -0.1f, 0.5f,  0.0f, 0.0f,
+                -0.5f, -0.5f, -0.1f, 0.0f,  0.5f, 0.0f,
+                0.5f, -0.5f, -0.1f, 0.0f,  0.0f, 0.5f,
+                0.5f,  0.5f, -0.1f, 0.0f,  0.5f, 0.5f,
         };
-
-        byte indices[] = {  // Помните, что мы начинаем с 0!
-                0, 1, 2,   // Первый треугольник
-                0, 2, 3,   // Второй треугольник
+        byte[] indices = new byte[]{
+                0, 1, 3,
+                3, 1, 2,
         };
 
         float[] textureCoordinates = new float[]{
@@ -47,8 +44,8 @@ public class Figure {
         };
 
         // Объект инициаплизирован
-        this.body = new VertexArray(vertices, indices, textureCoordinates);
-        this.texture = new Texture("./src/main/resources/img/avatar_TheFifthHorseman_1514332092.png");
+        this.body = new VertexArray(vertices, indices);
+//        this.texture = new Texture("./src/main/resources/img/avatar_TheFifthHorseman_1514332092.png");
     }
 
     /**
@@ -106,12 +103,12 @@ public class Figure {
         // Надо надеяться, что эта штука инициализирована
         Shader.ImageShader.enable();
         Shader.ImageShader.setUniformMat4f("multi_matrix", Matrix4f.translate(this.position).multiply(Matrix4f.rotate(this.rotation)));
-        this.texture.bind();
+//        this.texture.bind();
         // Теперь его надо "завести"
         this.body.render();
         // И убить
         this.body.unbind();
-        this.texture.unbind();
+//        this.texture.unbind();
         Shader.ImageShader.disable();
     }
 }
