@@ -72,6 +72,7 @@ public class Figure {
         this.body = new VertexArray(vertices, indices);
 //        this.texture = new Texture("./src/main/resources/img/avatar_TheFifthHorseman_1514332092.png");
         this.position.z = -2.0f;
+        this.rotation.x= 30.0f;
     }
 
     /**
@@ -87,9 +88,9 @@ public class Figure {
 
         }
 
-        rotation.z += 1.0f;
+//        rotation.z += 1.0f;
         rotation.x+=0.5f;
-//        rotation.y+=2.0f;
+        rotation.y+=1.0f;
 
         this.worldMatrix = transformation.getWorldMatrix(
                 this.position,
