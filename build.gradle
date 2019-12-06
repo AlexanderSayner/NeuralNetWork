@@ -40,6 +40,10 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.6'
 
+    // Это потому, что я плохо матан учил
+    // https://mvnrepository.com/artifact/org.joml/joml
+    implementation group: 'org.joml', name: 'joml', version: '1.9.19'
+
     // LWJGL
 
     implementation "org.lwjgl:lwjgl:$lwjglVersion"

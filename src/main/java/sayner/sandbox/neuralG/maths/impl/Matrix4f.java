@@ -1,6 +1,5 @@
 package sayner.sandbox.neuralG.maths.impl;
 
-import sayner.sandbox.neuralG.maths.MatrixI;
 import sayner.sandbox.neuralG.utils.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -15,6 +14,10 @@ public class Matrix4f {
 
     public Matrix4f() {
 
+    }
+
+    public Matrix4f(org.joml.Matrix4f matrix4f) {
+        this.elements = matrix4f.get(this.elements);
     }
 
     public static Matrix4f identity() {

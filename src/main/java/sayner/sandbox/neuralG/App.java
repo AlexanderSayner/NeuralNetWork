@@ -6,8 +6,10 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import sayner.sandbox.neuralG.graphics.Shader;
+import sayner.sandbox.neuralG.graphics.Transformation;
 import sayner.sandbox.neuralG.input.Input;
-import sayner.sandbox.neuralG.scene.*;
+import sayner.sandbox.neuralG.maths.impl.Matrix4f;
+import sayner.sandbox.neuralG.scene.Figure;
 
 import java.nio.IntBuffer;
 
@@ -28,6 +30,18 @@ public class App {
 
     // The window handle
     private long window;
+
+    /**
+     * Field of View in Radians
+     */
+    private static final float FOV = (float) Math.toRadians(60.0f);
+
+    private static final float Z_NEAR = 0.01f;
+
+    private static final float Z_FAR = 1000.f;
+
+    private sayner.sandbox.neuralG.maths.impl.Matrix4f projectionMatrix;
+
 
     private Figure figure;
 
@@ -125,6 +139,7 @@ public class App {
         GL.createCapabilities();
 
 //        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Режим Wireframe
+
     }
 
     private void setUpLoop() {
@@ -144,7 +159,7 @@ public class App {
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.6f, 0.0f);
         // Вот не надо этого :)
-        glEnable(GL_DEPTH_TEST);
+//        glEnable(GL_DEPTH_TEST);
         // So if you use a modern opengl which has custom shaders, its option won't work ,and you won't need it.
         // glEnable(GL_TEXTURE_2D);
 
@@ -174,14 +189,20 @@ public class App {
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
+
+        Transformation transformation=new Transformation();
+
+
         // Вот это вот всё добро уходит в шейдеры
-        Shader.ImageShader.setUniform1i("ourTexture", 1);
-        Shader.ImageShader.setUniform1f("scale",1.0f);
+//        Shader.ImageShader.setUniform1i("ourTexture", 1);
+//        Shader.ImageShader.setUniform1f("scale", 1.0f);
+
 
         int error11 = glGetError();
         if (error11 != GL_NO_ERROR) {
             System.out.println(String.format("OpenGL error code при инициализации 3: %d", error11));
         }
+
 
         // Run the rendering loop until the user has attempted to close
         // the window or has pressed the ESCAPE key.
@@ -189,7 +210,11 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
-            this.figure.update();
+            this.projectionMatrix=new Matrix4f(transformation.getProjectionMatrix(FOV, 620, 620, Z_NEAR, Z_FAR));
+            Matrix4f matrix4f=new Matrix4f();
+            Shader.ImageShader.setUniformMat4f("projectionMatrix",this.projectionMatrix);
+
+            this.figure.update(transformation);
             this.figure.render();
 
             int error = glGetError();
