@@ -159,7 +159,7 @@ public class App {
         // Set the clear color
         glClearColor(0.85f, 0.0f, 0.6f, 0.0f);
         // Вот не надо этого :)
-//        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
         // So if you use a modern opengl which has custom shaders, its option won't work ,and you won't need it.
         // glEnable(GL_TEXTURE_2D);
 
