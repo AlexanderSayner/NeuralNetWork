@@ -162,9 +162,9 @@ public class Figure {
 
         // Объект инициаплизирован
         this.body = new VertexArray(vertices, indices, textureCoordinates);
-        this.texture = new Texture("./src/main/resources/img/grassblock.png");
+        this.texture = new Texture("./src/main/resources/img/текстура.png");
         this.position.z = -2.0f;
-        this.rotation.x = 30.0f;
+        this.rotation.x = 210.0f;
     }
 
     /**
@@ -181,8 +181,8 @@ public class Figure {
         }
 
 //        rotation.z += 1.0f;
-        rotation.x += 0.5f;
-        rotation.y += 1.0f;
+//        rotation.x += 0.5f;
+        rotation.y += 0.5f;
 
         this.worldMatrix = transformation.getWorldMatrix(
                 this.position,

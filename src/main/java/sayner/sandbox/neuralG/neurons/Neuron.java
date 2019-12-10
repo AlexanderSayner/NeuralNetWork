@@ -16,5 +16,5 @@ public interface Neuron {
 
     Boolean addNewSynapse(Synapse synapse);
 
-    Boolean deleteSynapse(Synapse synapse);
+    Boolean removeSynapse(Synapse synapse);
 }

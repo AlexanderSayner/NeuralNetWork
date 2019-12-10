@@ -7,11 +7,9 @@ public interface Synapse {
 
     Neuron neuron();
 
+    Float getWeightedValue(Float value);
+
     Float reduceWeight(Float value);
 
     Float increaseWeight(Float value);
-
-    Float getWeight();
-
-    Float getValue();
 }
