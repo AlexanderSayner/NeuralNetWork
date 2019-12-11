@@ -9,6 +9,8 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Transformation;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
+import sayner.sandbox.neuralG.neurons.NeuralNet;
+import sayner.sandbox.neuralG.neurons.impl.NeuralNetImpl;
 import sayner.sandbox.neuralG.scene.Figure;
 
 import java.nio.IntBuffer;
@@ -149,6 +151,7 @@ public class App {
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
+
         GL.createCapabilities();
 
         int error121 = glGetError();
@@ -236,10 +239,14 @@ public class App {
      * @param args
      */
     public static void main(String[] args) {
-
+/*
         System.out.println("Launching the game");
         new App().startGame();
         System.out.println("Main finished its execution");
+*/
+
+        NeuralNet neuralNet=new NeuralNetImpl();
+        neuralNet.start();
     }
 
 }

@@ -1,5 +1,7 @@
 package sayner.sandbox.neuralG.neurons;
 
+import java.util.List;
+
 /**
  * Абстрактное представление нейрона
  * 
@@ -9,10 +11,12 @@ package sayner.sandbox.neuralG.neurons;
 public interface Neuron {
 
     /**
-     * Логика
+     * Логика активации
      * @return
      */
     Float activate();
+
+    List<Synapse> getSynapses();
 
     Boolean addNewSynapse(Synapse synapse);
 
