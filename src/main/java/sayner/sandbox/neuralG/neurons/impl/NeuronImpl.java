@@ -8,7 +8,7 @@ import java.util.List;
 
 public class NeuronImpl implements Neuron {
 
-    private List<Synapse> synapseList=new ArrayList<>();
+    private List<Synapse> synapseList = new ArrayList<>();
 
     public NeuronImpl(Synapse... synapses) {
         for (Synapse synapse : synapses) {
@@ -37,7 +37,7 @@ public class NeuronImpl implements Neuron {
     private Float acivationFunction(Float x) {
 
 //        return (float) (1 / (1 + Math.exp(x)));
-        return x <0.5f ? 0.0f : 1.0f;
+        return x < 0.5f ? 0.0f : 1.0f;
     }
 
     @Override

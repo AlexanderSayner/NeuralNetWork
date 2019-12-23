@@ -1,5 +1,7 @@
 package sayner.sandbox.neuralG.neurons;
 
+import sayner.sandbox.neuralG.neurons.observers.NeuronObserver;
+
 import java.util.List;
 
 /**
@@ -8,13 +10,7 @@ import java.util.List;
  * @author Dark Archon
  *
  */
-public interface Neuron {
-
-    /**
-     * Логика активации
-     * @return
-     */
-    Float activate();
+public interface Neuron extends NeuronObserver {
 
     List<Synapse> getSynapses();
 

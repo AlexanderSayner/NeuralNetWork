@@ -9,11 +9,17 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Transformation;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
-import sayner.sandbox.neuralG.neurons.NeuralNet;
-import sayner.sandbox.neuralG.neurons.impl.NeuralNetImpl;
+import sayner.sandbox.neuralG.neurons.Neuron;
+import sayner.sandbox.neuralG.neurons.Synapse;
+import sayner.sandbox.neuralG.neurons.impl.NeuronImpl;
+import sayner.sandbox.neuralG.neurons.impl.SynapseImpl;
+import sayner.sandbox.neuralG.neurons.observers.listeners.SynapseCompositeListener;
 import sayner.sandbox.neuralG.scene.Figure;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -193,7 +199,7 @@ public class App {
         Shader.loadAllShaders();
 
 
-        Transformation transformation=new Transformation();
+        Transformation transformation = new Transformation();
 
 
         // Вот это вот всё добро уходит в шейдеры
@@ -213,9 +219,9 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
-            this.projectionMatrix=new Matrix4f(transformation.getProjectionMatrix(FOV, 620, 620, Z_NEAR, Z_FAR));
-            Matrix4f matrix4f=new Matrix4f();
-            Shader.ImageShader.setUniformMat4f("projectionMatrix",this.projectionMatrix);
+            this.projectionMatrix = new Matrix4f(transformation.getProjectionMatrix(FOV, 620, 620, Z_NEAR, Z_FAR));
+            Matrix4f matrix4f = new Matrix4f();
+            Shader.ImageShader.setUniformMat4f("projectionMatrix", this.projectionMatrix);
 
             this.figure.update(transformation);
             this.figure.render();
@@ -238,15 +244,79 @@ public class App {
      *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 /*
         System.out.println("Launching the game");
         new App().startGame();
         System.out.println("Main finished its execution");
 */
 
-        NeuralNet neuralNet=new NeuralNetImpl();
-        neuralNet.start();
+//        ACompositeListener compositeListener1 = new ACompositeListener();
+//        compositeListener1.add(new AConcreteListener1());
+//        ACompositeListener compositeListener2 = new ACompositeListener();
+//        compositeListener1.add(compositeListener2);
+//        compositeListener2.add(new AConcreteListener2());
+//        compositeListener2.add(new AConcreteListener3());
+//        AEventSource source = new AEventSource(compositeListener1);
+
+
+        // Входные синапсы
+        Synapse w1 = new SynapseImpl(1.0f);
+        Synapse w2 = new SynapseImpl(-1.0f);
+        Synapse w3 = new SynapseImpl(-1.0f);
+        Synapse w4 = new SynapseImpl(1.0f);
+
+        // Создаём нейрон, присоединяем к нему входные синапсы
+        // Входной нейрон 1
+        Neuron neuron1Layer1 = new NeuronImpl(w1, w3);
+        Neuron neuron2Layer1 = new NeuronImpl(w2, w4);
+
+        // Надо передать синапсам значения
+        // Этот клас позволит одновременно передать значения множеству синапсов
+        SynapseCompositeListener x1 = new SynapseCompositeListener();
+        // Синапсы "присоединяются" к одной входной точке
+        x1.add(w1, w2);
+        // Передаём входное значение всем синапсам
+        x1.inputValueHasReceived(1.0f);
+
+        // Есть и второй вход, передаём данные синапсам и от него
+        SynapseCompositeListener x2 = new SynapseCompositeListener();
+        x2.add(w3, w4);
+        x2.inputValueHasReceived(1.0f);
+
+        // Вывод результата
+        List<Float> layer1Result = new ArrayList<>();
+        layer1Result.add(neuron1Layer1.activate());
+        layer1Result.add(neuron2Layer1.activate());
+
+        // =============================================================================================================
+        // Конец первого слоя, результаты получены
+        // =============================================================================================================
+
+        // Входные синапсы второго слоя
+        Synapse out1 = new SynapseImpl(1.0f);
+        Synapse out2 = new SynapseImpl(1.0f);
+
+        // Третий нейрон, выходной
+        // Синапсы у него - выходы с первого слоя
+        Neuron neuron1Layer2 = new NeuronImpl(out1, out2);
+
+        // Выход первого нейрона первого слоя
+        SynapseCompositeListener neuron1Layer1Output = new SynapseCompositeListener();
+        neuron1Layer1Output.add(out1);
+        neuron1Layer1Output.inputValueHasReceived(layer1Result.get(0));
+
+        // Взять выход со второго нейрона первого слоя
+        SynapseCompositeListener neuron2Layer1Output = new SynapseCompositeListener();
+        neuron2Layer1Output.add(out2);
+        neuron2Layer1Output.inputValueHasReceived(layer1Result.get(1));
+
+        List<Float> layer2Result = new ArrayList<>();
+        layer2Result.add(neuron1Layer2.activate());
+        layer2Result.forEach(System.out::println);
+
+//        NeuralNet neuralNet=new NeuralNetImpl();
+//        neuralNet.start();
     }
 
 }

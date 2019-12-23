@@ -1,24 +1,28 @@
 package sayner.sandbox.neuralG.neurons;
 
+import sayner.sandbox.neuralG.exceptions.TooManyInputValues;
+
 import java.util.List;
 
 /**
- * Абстакция слоя нейронной сети
+ * Абстракция простого слоя нейронной сети
  */
 public interface Layer {
 
     /**
-     * Передаёт значения входным синапсам нейронов
-     * @param input - упорядоченный список входных сигналов,
-     *              его размер должен быть равен количеству входных синапсов первого слоя
-     * @return
+     * Вход слоя
+     * Передаёт вектор входных значений нейронам
+     *
+     * @param input вектор
+     * @throws TooManyInputValues если будет передано чисел больше, чем входов нейронов
      */
-    Boolean onInput(List<Float> input) throws IndexOutOfBoundsException;
+    void transferValues(Float... input) throws TooManyInputValues;
 
     /**
-     * Активирует нейроны, получает упорядоченный список с выходными сигналами
+     * Выход слоя
+     * Запускает вычисления
+     *
      * @return
-     * @throws IndexOutOfBoundsException
      */
-    List<Float> onOutput();
+    List<Float> activateNeurons();
 }

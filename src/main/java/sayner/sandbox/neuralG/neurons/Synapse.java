@@ -1,15 +1,12 @@
 package sayner.sandbox.neuralG.neurons;
 
+import sayner.sandbox.neuralG.neurons.observers.SynapseObserver;
+
 /**
  * Абстракция синапса
+ * Синапс перенимает свойства наблюдателя
  */
-public interface Synapse {
-
-    Float transferValue(Float value);
+public interface Synapse extends SynapseObserver {
 
     Float getWeightedValue();
-
-    Float reduceWeight(Float value);
-
-    Float increaseWeight(Float value);
 }

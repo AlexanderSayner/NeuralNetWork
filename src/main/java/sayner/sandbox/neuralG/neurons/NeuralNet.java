@@ -1,6 +1,8 @@
 package sayner.sandbox.neuralG.neurons;
 
-public interface NeuralNet {
+public class NeuralNet {
 
-    public void start();
+    public NeuralNet() {
+
+    }
 }

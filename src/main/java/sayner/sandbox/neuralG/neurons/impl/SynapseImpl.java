@@ -7,7 +7,8 @@ public class SynapseImpl implements Synapse {
 
     Neuron inputNeuron;
     private Float weight = 1.0f; // Вес синапса
-    private Float value; // Входное знаение
+    // Входное значение
+    private float value; // Пусть лучше будет примитив, чем схватить NUllPointer или потом нудо будет обработку исключения
 
     public SynapseImpl(Float weight) {
         this.weight = weight;
@@ -19,8 +20,8 @@ public class SynapseImpl implements Synapse {
     }
 
     @Override
-    public Float transferValue(Float value) {
-        return this.value = value;
+    public void inputValueHasReceived(Float value) {
+         this.value = value;
     }
 
     @Override
@@ -29,12 +30,12 @@ public class SynapseImpl implements Synapse {
     }
 
     @Override
-    public Float reduceWeight(Float value) {
-        return weight -= value;
+    public void reduceWeight(Float value) {
+         weight -= value;
     }
 
     @Override
-    public Float increaseWeight(Float value) {
-        return weight += value;
+    public void increaseWeight(Float value) {
+         weight += value;
     }
 }
