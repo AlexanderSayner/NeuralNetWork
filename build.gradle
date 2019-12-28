@@ -27,7 +27,7 @@ switch (OperatingSystem.current()) {
 group 'sayner.sandbox'
 version '1.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 mainClassName = 'sayner.sandbox.neuralG.App'
 

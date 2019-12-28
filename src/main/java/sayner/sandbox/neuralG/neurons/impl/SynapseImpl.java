@@ -1,12 +1,10 @@
 package sayner.sandbox.neuralG.neurons.impl;
 
-import sayner.sandbox.neuralG.neurons.Neuron;
 import sayner.sandbox.neuralG.neurons.Synapse;
 
 public class SynapseImpl implements Synapse {
 
-    Neuron inputNeuron;
-    private Float weight = 1.0f; // Вес синапса
+    private Float weight; // Вес синапса
     // Входное значение
     private float value; // Пусть лучше будет примитив, чем схватить NUllPointer или потом нудо будет обработку исключения
 
@@ -37,5 +35,19 @@ public class SynapseImpl implements Synapse {
     @Override
     public void increaseWeight(Float value) {
          weight += value;
+    }
+
+    // =================================================================================================================
+    // Getter'ы & Setter'ы
+    // =================================================================================================================
+
+    @Override
+    public Float getWeight() {
+        return weight;
+    }
+
+    @Override
+    public Float getValue() {
+        return value;
     }
 }

@@ -4,6 +4,7 @@ import sayner.sandbox.neuralG.neurons.Neuron;
 import sayner.sandbox.neuralG.neurons.Synapse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NeuronImpl implements Neuron {
@@ -11,9 +12,7 @@ public class NeuronImpl implements Neuron {
     private List<Synapse> synapseList = new ArrayList<>();
 
     public NeuronImpl(Synapse... synapses) {
-        for (Synapse synapse : synapses) {
-            synapseList.add(synapse);
-        }
+        synapseList.addAll(Arrays.asList(synapses));
     }
 
     /**
@@ -34,15 +33,16 @@ public class NeuronImpl implements Neuron {
      * @param x - аргумент
      * @return - результат
      */
-    private Float acivationFunction(Float x) {
+    private Float activationFunction(Float x) {
 
-//        return (float) (1 / (1 + Math.exp(x)));
-        return x < 0.5f ? 0.0f : 1.0f;
+        float result= (float) (1 / (1 + Math.exp(-x)));
+        return result;
+//        return x < 0.5f ? 0.0f : 1.0f;
     }
 
     @Override
     public Float activate() {
-        return acivationFunction(sumSynapses());
+        return activationFunction(sumSynapses());
     }
 
     @Override

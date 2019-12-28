@@ -18,13 +18,20 @@ public class LayerImpl implements Layer {
     private final List<Neuron> neurons;
     private List<SynapseCompositeListener> synapseCompositeListeners;
 
+    // Для обучения методом обратного распространения
+    List<Float> resultValuesList;
+
+    /**
+     * Принимает на входе множество нейронов
+     * и слушателей для их входных синапсов
+     *
+     * @param neurons   - множество нейронов
+     * @param listeners - их входы
+     */
     public LayerImpl(List<Neuron> neurons, SynapseCompositeListener... listeners) {
         this.neurons = neurons;
+        this.synapseCompositeListeners = new ArrayList<>();
         this.synapseCompositeListeners.addAll(Arrays.asList(listeners));
-    }
-
-    public List<Neuron> getNeurons() {
-        return neurons;
     }
 
     @Override
@@ -44,10 +51,23 @@ public class LayerImpl implements Layer {
 
     @Override
     public List<Float> activateNeurons() {
-        List<Float> resultValuesList = new ArrayList<>();
+
+        resultValuesList = new ArrayList<>();
         for (Neuron neuron : neurons) {
             resultValuesList.add(neuron.activate());
         }
+        return resultValuesList;
+    }
+
+    // =================================================================================================================
+    // Getter'ы & Setter'ы
+    // =================================================================================================================
+
+    public List<Neuron> getNeurons() {
+        return neurons;
+    }
+
+    public List<Float> getResultValuesList() {
         return resultValuesList;
     }
 }

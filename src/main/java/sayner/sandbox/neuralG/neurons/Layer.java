@@ -25,4 +25,8 @@ public interface Layer {
      * @return
      */
     List<Float> activateNeurons();
+
+    List<Neuron> getNeurons();
+
+    List<Float> getResultValuesList();
 }
