@@ -34,8 +34,8 @@ public class XorNetBuilder {
 
         // Создаём нейрон, присоединяем к нему входные синапсы
         // Входной нейрон 1
-        Neuron neuron1Layer1 = new NeuronImpl(w1,w3);
-        Neuron neuron2Layer1 = new NeuronImpl(w2,w4);
+        Neuron neuron1Layer1 = new NeuronImpl(w1, w3);
+        Neuron neuron2Layer1 = new NeuronImpl(w2, w4);
 
         // Надо передать синапсам значения
         // Этот клас позволит одновременно передать значения множеству синапсов
@@ -57,13 +57,13 @@ public class XorNetBuilder {
         return layer;
     }
 
-    public static LayerImpl createRandomWeightSecondLayer() {
+    public static LayerImpl createRandomWeightSecondLayer(Layer firstRandomLayer) {
 
         // Входные синапсы второго слоя
 //        Synapse out1 = new SynapseImpl(randomWeight());
 //        Synapse out2 = new SynapseImpl(randomWeight());
-        Synapse out1 = new SynapseImpl(1.5f);
-        Synapse out2 = new SynapseImpl(-2.3f);
+        Synapse out1 = new SynapseImpl(1.5f, firstRandomLayer.getNeurons().get(0));
+        Synapse out2 = new SynapseImpl(-2.3f, firstRandomLayer.getNeurons().get(1));
 
         // Третий нейрон, выходной
         // Синапсы у него - выходы с первого слоя

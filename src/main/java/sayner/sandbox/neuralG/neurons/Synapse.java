@@ -29,6 +29,13 @@ public interface Synapse extends SynapseObserver {
      */
     Float getValue();
 
+    /**
+     * Пока что может соединяться с одним нейроном
+     * @return нейрон, к выходу которого присоединён синапс
+     */
+    Neuron getConnectedAxon();
+    void setNewConnectedAxon(Neuron axon);
+
     // ========================================================
     // Функционал для обучения нейронной сети
     // ========================================================
@@ -38,7 +45,7 @@ public interface Synapse extends SynapseObserver {
      *
      * @return дробное значение веса
      */
-    Float getPreviousStepWeight();
+    Float getPreviousWeightShift();
 
     /**
      * 1. Обновляет значение веса на предыдущем шаге обучения,

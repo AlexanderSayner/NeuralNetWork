@@ -50,13 +50,11 @@ public class LayerImpl implements Layer {
     }
 
     @Override
-    public List<Float> activateNeurons() {
+    public void activateNeurons() {
 
-        resultValuesList = new ArrayList<>();
         for (Neuron neuron : neurons) {
-            resultValuesList.add(neuron.activate());
+            neuron.activate();
         }
-        return resultValuesList;
     }
 
     // =================================================================================================================
@@ -67,7 +65,12 @@ public class LayerImpl implements Layer {
         return neurons;
     }
 
-    public List<Float> getResultValuesList() {
-        return resultValuesList;
+    @Override
+    public List<Float> getResultList() {
+        List<Float> result=new ArrayList<>();
+        for (Neuron neuron : neurons) {
+            result.add(neuron.getResult());
+        }
+        return result;
     }
 }

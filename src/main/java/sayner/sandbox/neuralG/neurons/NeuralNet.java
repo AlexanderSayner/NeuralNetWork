@@ -21,7 +21,7 @@ public final class NeuralNet {
 //        firstLayer = XorNetBuilder.createFirstLayerXOR();
 //        secondLayer = XorNetBuilder.createSecondLayerXOR();
         firstRandomLayer = XorNetBuilder.createRandomWeightFirstLayer();
-        secondRandomLayer = XorNetBuilder.createRandomWeightSecondLayer();
+        secondRandomLayer = XorNetBuilder.createRandomWeightSecondLayer(firstRandomLayer);
     }
 
 //    public void start() {
@@ -58,14 +58,16 @@ public final class NeuralNet {
 
         // Активируем первый и сразу закидываем результаты во второй
         try {
-            List<Float> firstLayerResult = firstRandomLayer.activateNeurons();
+            firstRandomLayer.activateNeurons();
+            List<Float> firstLayerResult = firstRandomLayer.getResultList();
             secondRandomLayer.transferValues(firstLayerResult.toArray(Float[]::new));
         } catch (TooManyInputValues e) {
             System.out.println("ERROR: (second lvl) " + e.getMessage());
         }
 
+        secondRandomLayer.activateNeurons();
         // Итоговый результат
-        return secondRandomLayer.activateNeurons();
+        return secondRandomLayer.getResultList();
     }
 
 
@@ -124,29 +126,10 @@ public final class NeuralNet {
      */
     private Float weightShift(Float E, Float weightGradient, Float alpha, Float previousWeightShift) {
 
-        Float shift = E * weightGradient + alpha * previousWeightShift;
-        return shift;
+        return E * weightGradient + alpha * previousWeightShift;
     }
 
-    private void synapsesLearning(Map<Synapse, Float> synapseAndStepDelta, Float outputNeuralDelta, Float expectedOutput) {
-
-        for(Map.Entry<Synapse,Float> synapseAndStepDeltaEntry:synapseAndStepDelta.entrySet()){
-            Synapse synapse=synapseAndStepDeltaEntry.getKey();
-            Float previousDeltaWeight=synapseAndStepDeltaEntry.getValue();
-
-            // 1) Считаю дельту ошибки
-            Float weightDeltaError=weightDeltaError(synapse.getValue(),synapse.getWeight(),outputNeuralDelta,expectedOutput);
-            // 2) Градиент
-            Float gradient=weightGradient(synapse.getValue(),outputNeuralDelta);
-            // 3) Корректировка веса
-            Float weightShift=weightShift(E,gradient,alpha,previousDeltaWeight);
-
-            synapse.increaseWeight(weightShift);
-            synapseAndStepDeltaEntry.setValue(weightShift);
-        }
-    }
-
-    private void startLearning() {
+    public void startLearning() {
 
         // Заготавливаются входные значения
         List<Float> inputValues = new ArrayList<>();
@@ -157,25 +140,61 @@ public final class NeuralNet {
         List<Float> expectedOutput = new ArrayList<>();
         expectedOutput.add(1.0f);
 
-        // Задаётся скорость обучения
-        Float epsilon = 0.7f;
-        Float alpha = 0.3f; // Момент
-
         // Итерации обучения
-        for (int i = 0; i < 1; i++) {
-            List<Float> neuralNetworkResult = netWorkIteration(inputValues, expectedOutput);
+        for (int i = 0; i < 10; i++) {
+
+            // Вычисляю выход нейронной сети
+            List<Float> neuralNetworkResult = neuralNetResult(inputValues);
+            // 1. Дельта ошибки выходного нейрона
             Float outputNeuralDelta = outputNeuronDelta(expectedOutput.get(0), neuralNetworkResult.get(0));
+
+            // Беру все нейроны второго слоя
+            for (Neuron neuron : secondRandomLayer.getNeurons()) {
+                // И поехали по всем синапсам, учить их
+                for (Synapse learningSynapse : neuron.getSynapses()) {
+                    // Вычисляем дельту веса синапса
+                    Float weightDelta = weightDeltaError(
+                            learningSynapse.getConnectedAxon().getResult(),
+                            learningSynapse.getWeight(),
+                            outputNeuralDelta,
+                            expectedOutput.get(0));
+
+                    // Пеередаём дельту потомкам
+                    learningSynapse.getConnectedAxon().setWeightDelta(weightDelta);
+
+                    // Вычисление градиента для веса синапса
+                    Float weightGradient = weightGradient(learningSynapse.getConnectedAxon().getResult(), outputNeuralDelta);
+
+                    // Величина изменения веса
+                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    // и плюс, и минус нормальнно отработает
+                    learningSynapse.increaseWeight(weightShift);
+
+                    System.out.println(learningSynapse.getWeight());
+                }
+            }
+
+            for (Neuron neuron : firstRandomLayer.getNeurons()) {
+
+                for (Synapse learningSynapse : neuron.getSynapses()) {
+
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
+                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    learningSynapse.increaseWeight(weightShift);
+                }
+            }
+
         }
 
     }
-
+/*
     /**
      * Представление нейронной сети как "чёрный ящик"
      *
      * @param inputValues    входы
      * @param expectedOutput соответствующие ожидаемые выходы
      * @return фактический выход нейронной сети
-     */
+     *
     public List<Float> netWorkIteration(List<Float> inputValues, List<Float> expectedOutput) {
 
         List<Float> neuralNetResult = new ArrayList<>(neuralNetResult(inputValues));
@@ -194,45 +213,56 @@ public final class NeuralNet {
         // Особенность реализации обучения в том, что входные значения берутся прямо из синапса
         // т.е. выход нейрона на предыдущем слое - вход соединяющегося с ним синапса
 
-        Float ideal = expectedOutput.get(0);
-        Float output = neuralNetResult.get(0);
-
-        Float outputNeuronDelta = outputNeuronDelta(ideal, output);
-        System.out.println(String.format("Дельта выходного нейрона равна %f", outputNeuronDelta));
-
-        // Берём нейрон выходного слоя
-        List<Neuron> outputNeurons = secondRandomLayer.getNeurons();
-        List<Synapse> synapsesForSecondLevel = outputNeurons.get(0).getSynapses();
-
-        // Результат рабюоты первого слоя
-        List<Float> listOfTheFirstLayerOutputResults = firstRandomLayer.getResultValuesList();
-
-        // Вычисление дельты для веса синапса нейронов второго слоя
-        Float secondLayerResult = listOfTheFirstLayerOutputResults.get(0);
-        // Берём синапс, который будет учиться
-        Synapse learningSynapse = synapsesForSecondLevel.get(0);
-        // Вычисляем дельту веса синапса
-        Float weightDelta = weightDeltaError(secondLayerResult, learningSynapse.getWeight(), outputNeuronDelta, ideal);
-
-        // Вычисление градиента для веса синапса
-        Float weightGradient = weightGradient(listOfTheFirstLayerOutputResults.get(0), outputNeuronDelta);
 
 
-        Float previousWeightShift = 0.0f; // Предыдущий сдвиг
-
-        // Величина изменения веса
-        Float weightShift = weightShift(E, weightGradient, alpha, previousWeightShift);
-        // и плюс, и минус нормальнно отработает
-        learningSynapse.increaseWeight(weightShift);
-
-        System.out.println(learningSynapse.getWeight());
+//        Float ideal = expectedOutput.get(0);
+//        Float output = neuralNetResult.get(0);
+//
+//        Float outputNeuronDelta = outputNeuronDelta(ideal, output);
+//        System.out.println(String.format("Дельта выходного нейрона равна %f", outputNeuronDelta));
+//
+//        // =============================================================================================================
+//        // =============================================================================================================
+//        // =============================================================================================================
+//
+//        // Берём нейрон выходного слоя
+//        List<Neuron> outputNeurons = secondRandomLayer.getNeurons();
+//
+//        // Берём синапс, который будет учиться
+//        Synapse learningSynapse = outputNeurons.get(0).getSynapses().get(0);
+//        // Вычисляем дельту веса синапса
+//        Float weightDelta = weightDeltaError(
+//                learningSynapse.getConnectedAxon().getResult(),
+//                learningSynapse.getWeight(),
+//                outputNeuronDelta,
+//                ideal);
+//
+//        // Вычисление градиента для веса синапса
+//        Float weightGradient = weightGradient(learningSynapse.getConnectedAxon().getResult(), outputNeuronDelta);
+//
+//        // Величина изменения веса
+//        Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+//        // и плюс, и минус нормальнно отработает
+//        learningSynapse.increaseWeight(weightShift);
+//
+//        System.out.println(learningSynapse.getWeight());
 
         return neuralNetResult;
     }
-
+*/
+    /**
+     * Метод обучит синапсы между слоями
+     * Если смотреть на архитектуру сети, то outputLevel будет справа,
+     * а inputLayer - слева.
+     * Данный меотд берёт синапсы нейронов outputLevel, выход inputLayer
+     * и пересчитывает веса для синапсов нейронов outputLevel
+     * @param outputLevel - слой "справа"
+     * @param inputLayer - слой "слева"
+     */
+/*
     /**
      * Запускает процессы
-     */
+     *
     public void start() {
 
         List<Float> inputValues = new ArrayList<>();
@@ -257,5 +287,5 @@ public final class NeuralNet {
 
         System.out.println("TheEnd");
     }
-
+*/
 }

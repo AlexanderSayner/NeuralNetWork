@@ -246,7 +246,8 @@ public class App {
 */
 
         NeuralNet neuralNet=new NeuralNet();
-        neuralNet.start();
+//        neuralNet.start();
+        neuralNet.startLearning();
     }
 
 }

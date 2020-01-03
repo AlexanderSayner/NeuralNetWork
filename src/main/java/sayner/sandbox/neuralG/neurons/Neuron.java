@@ -14,6 +14,9 @@ public interface Neuron extends NeuronObserver {
 
     List<Synapse> getSynapses();
 
+    Float getWeightDelta();
+    void setWeightDelta(Float weightDelta);
+
     Boolean addNewSynapse(Synapse synapse);
 
     Boolean removeSynapse(Synapse synapse);

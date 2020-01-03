@@ -10,6 +10,8 @@ import java.util.List;
 public class NeuronImpl implements Neuron {
 
     private List<Synapse> synapseList = new ArrayList<>();
+    private Float result;
+    private Float weightDelta; // Дельта ошибки нейрона
 
     public NeuronImpl(Synapse... synapses) {
         synapseList.addAll(Arrays.asList(synapses));
@@ -35,14 +37,13 @@ public class NeuronImpl implements Neuron {
      */
     private Float activationFunction(Float x) {
 
-        float result= (float) (1 / (1 + Math.exp(-x)));
-        return result;
-//        return x < 0.5f ? 0.0f : 1.0f;
+        return (float) (1 / (1 + Math.exp(-x)));
     }
 
     @Override
     public Float activate() {
-        return activationFunction(sumSynapses());
+        result = activationFunction(sumSynapses());
+        return result;
     }
 
     @Override
@@ -58,5 +59,20 @@ public class NeuronImpl implements Neuron {
     @Override
     public Boolean removeSynapse(Synapse synapse) {
         return synapseList.remove(synapse);
+    }
+
+    @Override
+    public Float getResult() {
+        return result;
+    }
+
+    @Override
+    public Float getWeightDelta() {
+        return weightDelta;
+    }
+
+    @Override
+    public void setWeightDelta(Float weightDelta) {
+        this.weightDelta = weightDelta;
     }
 }
