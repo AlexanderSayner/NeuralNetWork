@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class XorNetBuilder {
+public final class XorNetBuilder {
 
     /**
      * Вычисляет случайное значение веса для синапса
@@ -53,8 +53,7 @@ public class XorNetBuilder {
         neurons.add(neuron2Layer1);
 
         // При передаче параметров никакой порядок уже не важен
-        LayerImpl layer = new LayerImpl(neurons, x1, x2);
-        return layer;
+        return new LayerImpl(neurons, x1, x2);
     }
 
     public static LayerImpl createRandomWeightSecondLayer(Layer firstRandomLayer) {
@@ -82,8 +81,85 @@ public class XorNetBuilder {
         List<Neuron> neurons = new ArrayList<>();
         neurons.add(neuron1Layer2);
 
-        LayerImpl layer = new LayerImpl(neurons, neuron1Layer1Output, neuron2Layer1Output);
-        return layer;
+        return new LayerImpl(neurons, neuron1Layer1Output, neuron2Layer1Output);
+    }
+
+    public static Layer createFirstLayer() {
+
+        // Нейроны первого скрытого слоя
+        List<Neuron> neurons = new ArrayList<>();
+        // Кадый нейрон первого скрытого слоя соединён с каждым входом
+        for (int hiddenN1 = 0; hiddenN1 < 16; hiddenN1++) {
+            // Генерация синапсов под каждый пиксель картинки
+            Synapse[] synapses = new Synapse[28 * 28];
+            for (int i = 0; i < 28 * 28; i++) {
+                synapses[i] = new SynapseImpl(randomWeight());
+            }
+            Neuron neuron = new NeuronImpl(synapses);
+            neurons.add(neuron);
+        }
+
+        // Входы нейросети
+        SynapseCompositeListener[] listeners = new SynapseCompositeListener[28 * 28];
+        for (int i = 0; i < 28 * 28; i++) {
+            listeners[i] = new SynapseCompositeListener();
+            for (Neuron neuron : neurons) {
+                listeners[i].add(neuron.getSynapses().get(i));
+            }
+        }
+
+        return new LayerImpl(neurons, listeners);
+    }
+
+    public static Layer createSecondLayer(Layer firstLayer) {
+
+        // Нейроны второго скрытого слоя
+        List<Neuron> neurons = new ArrayList<>();
+        // Соединение "каждый с каждым"
+        for (int hiddenN2 = 0; hiddenN2 < 16; hiddenN2++) {
+            Synapse[] synapses = new Synapse[16];
+            for (int i = 0; i < 16; i++) {
+                synapses[i] = new SynapseImpl(randomWeight(), firstLayer.getNeurons().get(i));
+            }
+            Neuron neuron = new NeuronImpl(synapses);
+            neurons.add(neuron);
+        }
+
+        // Выходы первого с слоя
+        SynapseCompositeListener[] listeners = new SynapseCompositeListener[16];
+        for (int i = 0; i < 16; i++) {
+            listeners[i] = new SynapseCompositeListener();
+            for (Neuron neuron : neurons) {
+                listeners[i].add(neuron.getSynapses().get(i));
+            }
+        }
+
+        return new LayerImpl(neurons, listeners);
+    }
+
+    public static Layer createOutputLayer(Layer secondLayer) {
+
+        // Выходные нейроны
+        List<Neuron> neurons = new ArrayList<>();
+        for (int outN = 0; outN < 10; outN++) {
+            Synapse[] synapses = new Synapse[16];
+            for (int i = 0; i < 16; i++) {
+                synapses[i] = new SynapseImpl(randomWeight(), secondLayer.getNeurons().get(i));
+            }
+            Neuron out = new NeuronImpl(synapses);
+            neurons.add(out);
+        }
+
+        // Выходы со второго слоя
+        SynapseCompositeListener[] listeners = new SynapseCompositeListener[16];
+        for (int i = 0; i < 16; i++) {
+            listeners[i] = new SynapseCompositeListener();
+            for (Neuron neuron : neurons) {
+                listeners[i].add(neuron.getSynapses().get(i));
+            }
+        }
+
+        return new LayerImpl(neurons, listeners);
     }
 
     // TODO: как-то задокументировать в виде картинки

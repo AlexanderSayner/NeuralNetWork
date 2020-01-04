@@ -16,6 +16,7 @@ public interface Neuron extends NeuronObserver {
 
     Float getWeightDelta();
     void setWeightDelta(Float weightDelta);
+    Float sumWeightDelta(Float weightDelta);
 
     Boolean addNewSynapse(Synapse synapse);
 

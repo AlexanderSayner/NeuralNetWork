@@ -75,4 +75,12 @@ public class NeuronImpl implements Neuron {
     public void setWeightDelta(Float weightDelta) {
         this.weightDelta = weightDelta;
     }
+
+    @Override
+    public Float sumWeightDelta(Float weightDelta) {
+        if (this.weightDelta == null) {
+            this.weightDelta = 0.0f;
+        }
+        return this.weightDelta += weightDelta;
+    }
 }

@@ -16,12 +16,20 @@ public final class NeuralNet {
     private final Layer firstRandomLayer;
     private final Layer secondRandomLayer;
 
+    private final Layer firstImageLayer;
+    private final Layer secondImageLayer;
+    private final Layer outputImageLayer;
+
     public NeuralNet() {
 
 //        firstLayer = XorNetBuilder.createFirstLayerXOR();
 //        secondLayer = XorNetBuilder.createSecondLayerXOR();
         firstRandomLayer = XorNetBuilder.createRandomWeightFirstLayer();
         secondRandomLayer = XorNetBuilder.createRandomWeightSecondLayer(firstRandomLayer);
+
+        firstImageLayer = XorNetBuilder.createFirstLayer();
+        secondImageLayer = XorNetBuilder.createSecondLayer(firstImageLayer);
+        outputImageLayer = XorNetBuilder.createOutputLayer(secondImageLayer);
     }
 
 //    public void start() {
@@ -129,6 +137,132 @@ public final class NeuralNet {
         return E * weightGradient + alpha * previousWeightShift;
     }
 
+    public void startImageLearning() {
+
+        alpha-=0.01f;
+
+        List<Float> inputValues = new ArrayList<>();
+        for (int i = 0; i < 28 * 28; i++) {
+            inputValues.add((float) (i / 28 * 28));
+        }
+
+        List<Float> expectedOutput = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            expectedOutput.add(i == 2 ? 1.0f : 0.0f);
+        }
+
+        // Итерации обучения
+        for (int i = 0; i < 100; i++) {
+
+            // Вычисляю выход нейронной сети
+            List<Float> neuralNetworkResult = imageNeuralNetResult(inputValues);
+
+            // Теперь я должен отдельно просчитать дельту ошибки для
+            // каждого выходного значения нейронной сети
+            int er = 0;
+            for (Neuron outputNeuron : outputImageLayer.getNeurons()) {
+                Float outputNeuralDelta = outputNeuronDelta(expectedOutput.get(er), neuralNetworkResult.get(er));
+
+                for (Synapse learningSynapse : outputNeuron.getSynapses()) {
+                    // Дельта ошибки для веса синапса
+                    Float weightDelta = weightDeltaError(
+                            learningSynapse.getValue(),
+                            learningSynapse.getWeight(),
+                            outputNeuralDelta,
+                            expectedOutput.get(er)
+                    );
+
+                    // Пеередаём дельту потомкам
+                    learningSynapse.getConnectedAxon().setWeightDelta(weightDelta);
+
+                    // Вычисление градиента для веса синапса
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), outputNeuralDelta);
+
+                    // Величина изменения веса
+                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    // и плюс, и минус нормальнно отработает
+                    learningSynapse.increaseWeight(weightShift);
+
+                }
+
+                er++;
+            }
+
+            // Следующий шаг - изменить веса между первым и вторым скрытым слоем
+            for (Neuron neuron : secondImageLayer.getNeurons()) {
+
+                for (Synapse learningSynapse : neuron.getSynapses()) {
+
+                    Float weightDelta = weightDeltaError(
+                            learningSynapse.getValue(),
+                            learningSynapse.getWeight(),
+                            neuron.getWeightDelta(),
+                            expectedOutput.get(2)
+                    );
+
+                    // ед. способ высчитать дельту для нейронов первого скрытого слоя
+//                    learningSynapse.getConnectedAxon().sumWeightDelta(
+//                            neuron.getWeightDelta() * learningSynapse.getWeight());
+
+                    learningSynapse.getConnectedAxon().sumWeightDelta(weightDelta);
+
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
+                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    learningSynapse.increaseWeight(weightShift);
+                }
+            }
+
+            // Последний шаг - пересчитать веса первого скрытого слоя
+            for (Neuron neuron : firstImageLayer.getNeurons()) {
+
+                for (Synapse learningSynapse : neuron.getSynapses()) {
+
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
+                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    learningSynapse.increaseWeight(weightShift);
+                }
+            }
+
+            System.out.println(String.format("======================= Step %f =======================", i + 0.0f));
+            for (int p = 0; p < 10; p++) {
+                System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));
+            }
+
+        }
+    }
+
+    public List<Float> imageNeuralNetResult(List<Float> onInput) {
+
+        // Передаём значения в первый слой
+        try {
+            firstImageLayer.transferValues(onInput.toArray(Float[]::new));
+        } catch (TooManyInputValues e) {
+            System.out.println("ERROR: (first lvl) " + e.getMessage());
+        }
+
+        // Активируем первый и сразу закидываем результаты во второй
+        try {
+            firstImageLayer.activateNeurons();
+            List<Float> firstLayerResult = firstImageLayer.getResultList();
+            secondImageLayer.transferValues(firstLayerResult.toArray(Float[]::new));
+        } catch (TooManyInputValues e) {
+            System.out.println("ERROR: (second lvl) " + e.getMessage());
+        }
+
+        // И в последний слой
+        try {
+            secondImageLayer.activateNeurons();
+            List<Float> secondLayerResult = secondImageLayer.getResultList();
+            outputImageLayer.transferValues(secondLayerResult.toArray(Float[]::new));
+        } catch (TooManyInputValues e) {
+            System.out.println("ERROR: (output lvl) " + e.getMessage());
+        }
+
+        outputImageLayer.activateNeurons();
+        // Итоговый результат
+        return outputImageLayer.getResultList();
+    }
+
     public void startLearning() {
 
         // Заготавливаются входные значения
@@ -182,7 +316,7 @@ public final class NeuralNet {
                 }
             }
 
-            System.out.println(String.format("Step %f, expected result is %f, in fact: %f",i+0.0f,expectedOutput.get(0),neuralNetworkResult.get(0)));
+            System.out.println(String.format("Step %f, expected result is %f, in fact: %f", i + 0.0f, expectedOutput.get(0), neuralNetworkResult.get(0)));
 
         }
 
