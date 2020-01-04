@@ -23,14 +23,14 @@ public class XorNetBuilder {
     public static LayerImpl createRandomWeightFirstLayer() {
 
         // Входные синапсы
-//        Synapse w1 = new SynapseImpl(randomWeight());
-//        Synapse w2 = new SynapseImpl(randomWeight());
-//        Synapse w3 = new SynapseImpl(randomWeight());
-//        Synapse w4 = new SynapseImpl(randomWeight());
-        Synapse w1 = new SynapseImpl(0.45f);
-        Synapse w2 = new SynapseImpl(0.78f);
-        Synapse w3 = new SynapseImpl(-0.12f);
-        Synapse w4 = new SynapseImpl(0.13f);
+        Synapse w1 = new SynapseImpl(randomWeight());
+        Synapse w2 = new SynapseImpl(randomWeight());
+        Synapse w3 = new SynapseImpl(randomWeight());
+        Synapse w4 = new SynapseImpl(randomWeight());
+//        Synapse w1 = new SynapseImpl(0.45f);
+//        Synapse w2 = new SynapseImpl(0.78f);
+//        Synapse w3 = new SynapseImpl(-0.12f);
+//        Synapse w4 = new SynapseImpl(0.13f);
 
         // Создаём нейрон, присоединяем к нему входные синапсы
         // Входной нейрон 1
@@ -62,8 +62,10 @@ public class XorNetBuilder {
         // Входные синапсы второго слоя
 //        Synapse out1 = new SynapseImpl(randomWeight());
 //        Synapse out2 = new SynapseImpl(randomWeight());
-        Synapse out1 = new SynapseImpl(1.5f, firstRandomLayer.getNeurons().get(0));
-        Synapse out2 = new SynapseImpl(-2.3f, firstRandomLayer.getNeurons().get(1));
+//        Synapse out1 = new SynapseImpl(1.5f, firstRandomLayer.getNeurons().get(0));
+//        Synapse out2 = new SynapseImpl(-2.3f, firstRandomLayer.getNeurons().get(1));
+        Synapse out1 = new SynapseImpl(randomWeight(), firstRandomLayer.getNeurons().get(0));
+        Synapse out2 = new SynapseImpl(randomWeight(), firstRandomLayer.getNeurons().get(1));
 
         // Третий нейрон, выходной
         // Синапсы у него - выходы с первого слоя
