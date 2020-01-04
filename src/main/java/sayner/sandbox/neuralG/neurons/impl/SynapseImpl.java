@@ -9,7 +9,7 @@ public class SynapseImpl implements Synapse {
 
     private Float weight; // Вес синапса
     // Входное значение
-    private Float value; // Пусть лучше будет примитив, чем схватить NUllPointer или потом нудо будет обработку исключения
+    private Float value;
 
     private Float previousWeight = 0.0f; // Перезаписывается при изменении веса
 

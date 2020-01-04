@@ -1,14 +1,15 @@
 package sayner.sandbox.neuralG.neurons;
 
 import sayner.sandbox.neuralG.exceptions.TooManyInputValues;
+import sayner.sandbox.neuralG.neurons.math.NeuronMath;
+import sayner.sandbox.neuralG.neurons.tools.ImageTool;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 public final class NeuralNet {
 
-    Float E = 0.7f; // Скорость обучения
+    Float E = 0.5f; // Скорость обучения
     Float alpha = 0.03f; // Момент
 
     //    private final Layer firstLayer;
@@ -139,86 +140,108 @@ public final class NeuralNet {
 
     public void startImageLearning() {
 
-        alpha-=0.01f;
-
-        List<Float> inputValues = new ArrayList<>();
-        for (int i = 0; i < 28 * 28; i++) {
-            inputValues.add((float) (i / 28 * 28));
+        ImageTool[] imageTool = new ImageTool[10];
+        try {
+            imageTool[0] = new ImageTool("./src/main/resources/img/Zero.jpg");
+            imageTool[1] = new ImageTool("./src/main/resources/img/One.jpg");
+            imageTool[2] = new ImageTool("./src/main/resources/img/Two.jpg");
+            imageTool[3] = new ImageTool("./src/main/resources/img/Three.jpg");
+            imageTool[4] = new ImageTool("./src/main/resources/img/Four.jpg");
+            imageTool[5] = new ImageTool("./src/main/resources/img/Five.jpg");
+            imageTool[6] = new ImageTool("./src/main/resources/img/Six.jpg");
+            imageTool[7] = new ImageTool("./src/main/resources/img/Seven.jpg");
+            imageTool[8] = new ImageTool("./src/main/resources/img/Eight.jpg");
+            imageTool[9] = new ImageTool("./src/main/resources/img/Nine.jpg");
+        } catch (IOException e) {
+            System.out.println("Reading file error: " + e.getMessage());
+            return;
         }
 
-        List<Float> expectedOutput = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            expectedOutput.add(i == 2 ? 1.0f : 0.0f);
-        }
+        Random random = new Random();
 
         // Итерации обучения
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
+
+            // Берём случайное значение из тестовой выборки
+            int lot = random.nextInt(1);
+
+            List<Float> inputValues = imageTool[lot].createInputArray();
+            List<Float> expectedOutput = new ArrayList<>();
+            for (int foo = 0; foo < 10; foo++) {
+                expectedOutput.add(foo == lot ? 1.0f : 0.0f);
+            }
+
+            if (inputValues.size() == 0 || expectedOutput.size() == 0) {
+                System.out.println("Что-то пошло не так");
+                return;
+            }
 
             // Вычисляю выход нейронной сети
             List<Float> neuralNetworkResult = imageNeuralNetResult(inputValues);
 
             // Теперь я должен отдельно просчитать дельту ошибки для
             // каждого выходного значения нейронной сети
-            int er = 0;
+            int resultNumber = 0;
             for (Neuron outputNeuron : outputImageLayer.getNeurons()) {
-                Float outputNeuralDelta = outputNeuronDelta(expectedOutput.get(er), neuralNetworkResult.get(er));
+
+                Float outputNeuralError = NeuronMath.outputError(
+                        expectedOutput.get(resultNumber),
+                        neuralNetworkResult.get(resultNumber),
+                        outputNeuron.getInputValue()
+                );
 
                 for (Synapse learningSynapse : outputNeuron.getSynapses()) {
-                    // Дельта ошибки для веса синапса
-                    Float weightDelta = weightDeltaError(
-                            learningSynapse.getValue(),
-                            learningSynapse.getWeight(),
-                            outputNeuralDelta,
-                            expectedOutput.get(er)
-                    );
-
-                    // Пеередаём дельту потомкам
-                    learningSynapse.getConnectedAxon().setWeightDelta(weightDelta);
-
-                    // Вычисление градиента для веса синапса
-                    Float weightGradient = weightGradient(learningSynapse.getValue(), outputNeuralDelta);
 
                     // Величина изменения веса
-                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    Float weightShift = NeuronMath.weightShift(E, outputNeuralError, learningSynapse.getValue());
                     // и плюс, и минус нормальнно отработает
                     learningSynapse.increaseWeight(weightShift);
 
+                    // Передажю на предыдущий слой слагаемое дельты ошибки нейрона
+                    // При проходе по всем нейронам в цикле
+                    // каждый нейрон
+                    // по синапсу пройдёт в связанный с ним нейрон
+                    // и положит туда часть суммы дельты ошибки
+                    // В итоге каждый нейрон (10 шт по 16 синапсов в каждом) сделает свой вклад в вычисления
+                    // и дельта нейронов на пред. слое будет вычислена правильно
+                    learningSynapse.getConnectedAxon().sumWeightDelta(
+                            outputNeuralError * learningSynapse.getWeight()
+                    );
                 }
 
-                er++;
+                resultNumber++;
             }
 
             // Следующий шаг - изменить веса между первым и вторым скрытым слоем
             for (Neuron neuron : secondImageLayer.getNeurons()) {
 
+                Float hiddenNeuralError = NeuronMath.hiddenError(
+                        neuron.getNeuronErrorDelta(),
+                        neuron.getInputValue()
+                );
+
                 for (Synapse learningSynapse : neuron.getSynapses()) {
 
-                    Float weightDelta = weightDeltaError(
-                            learningSynapse.getValue(),
-                            learningSynapse.getWeight(),
-                            neuron.getWeightDelta(),
-                            expectedOutput.get(2)
-                    );
-
-                    // ед. способ высчитать дельту для нейронов первого скрытого слоя
-//                    learningSynapse.getConnectedAxon().sumWeightDelta(
-//                            neuron.getWeightDelta() * learningSynapse.getWeight());
-
-                    learningSynapse.getConnectedAxon().sumWeightDelta(weightDelta);
-
-                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
-                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    Float weightShift = NeuronMath.weightShift(E, hiddenNeuralError, learningSynapse.getValue());
                     learningSynapse.increaseWeight(weightShift);
+
+                    learningSynapse.getConnectedAxon().sumWeightDelta(
+                            hiddenNeuralError * learningSynapse.getWeight()
+                    );
                 }
             }
 
             // Последний шаг - пересчитать веса первого скрытого слоя
             for (Neuron neuron : firstImageLayer.getNeurons()) {
 
+                Float hiddenNeuralError = NeuronMath.hiddenError(
+                        neuron.getNeuronErrorDelta(),
+                        neuron.getInputValue()
+                );
+
                 for (Synapse learningSynapse : neuron.getSynapses()) {
 
-                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
-                    Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
+                    Float weightShift = NeuronMath.weightShift(E, hiddenNeuralError, learningSynapse.getValue());
                     learningSynapse.increaseWeight(weightShift);
                 }
             }
@@ -294,7 +317,7 @@ public final class NeuralNet {
                             expectedOutput.get(0));
 
                     // Пеередаём дельту потомкам
-                    learningSynapse.getConnectedAxon().setWeightDelta(weightDelta);
+                    learningSynapse.getConnectedAxon().setNeuronErrorDelta(weightDelta);
 
                     // Вычисление градиента для веса синапса
                     Float weightGradient = weightGradient(learningSynapse.getValue(), outputNeuralDelta);
@@ -310,7 +333,7 @@ public final class NeuralNet {
 
                 for (Synapse learningSynapse : neuron.getSynapses()) {
 
-                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getWeightDelta());
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), neuron.getNeuronErrorDelta());
                     Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
                     learningSynapse.increaseWeight(weightShift);
                 }

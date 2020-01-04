@@ -2,6 +2,7 @@ package sayner.sandbox.neuralG.neurons.impl;
 
 import sayner.sandbox.neuralG.neurons.Neuron;
 import sayner.sandbox.neuralG.neurons.Synapse;
+import sayner.sandbox.neuralG.neurons.math.NeuronMath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +11,10 @@ import java.util.List;
 public class NeuronImpl implements Neuron {
 
     private List<Synapse> synapseList = new ArrayList<>();
+    private Float input; // Суммарное входное значение
+
     private Float result;
-    private Float weightDelta; // Дельта ошибки нейрона
+    private Float neuronErrorDelta; // Дельта ошибки нейрона
 
     public NeuronImpl(Synapse... synapses) {
         synapseList.addAll(Arrays.asList(synapses));
@@ -23,10 +26,10 @@ public class NeuronImpl implements Neuron {
      * @return - сумма взвешанных значений
      */
     private Float sumSynapses() {
-        Float sum = 0.0f;
+        input = 0.0f;
         for (Synapse synapse : synapseList)
-            sum += synapse.getWeightedValue();
-        return sum;
+            input += synapse.getWeightedValue();
+        return input;
     }
 
     /**
@@ -37,13 +40,18 @@ public class NeuronImpl implements Neuron {
      */
     private Float activationFunction(Float x) {
 
-        return (float) (1 / (1 + Math.exp(-x)));
+        return NeuronMath.sigmoid(x);
     }
 
     @Override
     public Float activate() {
         result = activationFunction(sumSynapses());
         return result;
+    }
+
+    @Override
+    public Float getInputValue() {
+        return input;
     }
 
     @Override
@@ -67,20 +75,20 @@ public class NeuronImpl implements Neuron {
     }
 
     @Override
-    public Float getWeightDelta() {
-        return weightDelta;
+    public Float getNeuronErrorDelta() {
+        return neuronErrorDelta;
     }
 
     @Override
-    public void setWeightDelta(Float weightDelta) {
-        this.weightDelta = weightDelta;
+    public void setNeuronErrorDelta(Float neuronErrorDelta) {
+        this.neuronErrorDelta = neuronErrorDelta;
     }
 
     @Override
     public Float sumWeightDelta(Float weightDelta) {
-        if (this.weightDelta == null) {
-            this.weightDelta = 0.0f;
+        if (this.neuronErrorDelta == null) {
+            this.neuronErrorDelta = 0.0f;
         }
-        return this.weightDelta += weightDelta;
+        return this.neuronErrorDelta += weightDelta;
     }
 }
