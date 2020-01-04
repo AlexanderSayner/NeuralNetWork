@@ -9,7 +9,7 @@ import java.util.Map;
 public final class NeuralNet {
 
     Float E = 0.7f; // Скорость обучения
-    Float alpha = 0.3f; // Момент
+    Float alpha = 0.03f; // Момент
 
     //    private final Layer firstLayer;
 //    private final Layer secondLayer;
@@ -141,7 +141,7 @@ public final class NeuralNet {
         expectedOutput.add(1.0f);
 
         // Итерации обучения
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
 
             // Вычисляю выход нейронной сети
             List<Float> neuralNetworkResult = neuralNetResult(inputValues);
@@ -163,14 +163,12 @@ public final class NeuralNet {
                     learningSynapse.getConnectedAxon().setWeightDelta(weightDelta);
 
                     // Вычисление градиента для веса синапса
-                    Float weightGradient = weightGradient(learningSynapse.getConnectedAxon().getResult(), outputNeuralDelta);
+                    Float weightGradient = weightGradient(learningSynapse.getValue(), outputNeuralDelta);
 
                     // Величина изменения веса
                     Float weightShift = weightShift(E, weightGradient, alpha, learningSynapse.getPreviousWeightShift());
                     // и плюс, и минус нормальнно отработает
                     learningSynapse.increaseWeight(weightShift);
-
-                    System.out.println(learningSynapse.getWeight());
                 }
             }
 
@@ -183,6 +181,8 @@ public final class NeuralNet {
                     learningSynapse.increaseWeight(weightShift);
                 }
             }
+
+            System.out.println(String.format("Step %f, expected result is %f, in fact: %f",i+0.0f,expectedOutput.get(0),neuralNetworkResult.get(0)));
 
         }
 
