@@ -67,8 +67,11 @@ public class LayerImpl implements Layer {
 
     @Override
     public List<Float> getResultList() {
-        List<Float> result=new ArrayList<>();
+        List<Float> result = new ArrayList<>();
         for (Neuron neuron : neurons) {
+            // TODO: похоже на костыль
+            if (neuron instanceof Bias)
+                continue;
             result.add(neuron.getResult());
         }
         return result;

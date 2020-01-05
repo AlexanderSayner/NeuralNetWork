@@ -9,7 +9,7 @@ import java.util.*;
 
 public final class NeuralNet {
 
-    Float E = 0.85f; // Скорость обучения
+    Float E = 0.3f; // Скорость обучения
 
     private final Layer firstImageLayer;
     private final Layer secondImageLayer;
@@ -19,8 +19,43 @@ public final class NeuralNet {
 
         firstImageLayer = XorNetBuilder.createFirstLayer();
         secondImageLayer = XorNetBuilder.createSecondLayer(firstImageLayer);
-//        secondImageLayer = XorNetBuilder.createSecondLayer();
         outputImageLayer = XorNetBuilder.createOutputLayer(secondImageLayer);
+    }
+
+    public void testRun() {
+
+        ImageTool[] imageTool = new ImageTool[10];
+        try {
+            imageTool[0] = new ImageTool("./src/main/resources/img/testNumbers/Zero.jpg");
+            imageTool[1] = new ImageTool("./src/main/resources/img/testNumbers/One.jpg");
+            imageTool[2] = new ImageTool("./src/main/resources/img/testNumbers/Two.jpg");
+            imageTool[3] = new ImageTool("./src/main/resources/img/testNumbers/Three.jpg");
+            imageTool[4] = new ImageTool("./src/main/resources/img/testNumbers/Four.jpg");
+            imageTool[5] = new ImageTool("./src/main/resources/img/testNumbers/Five.jpg");
+            imageTool[6] = new ImageTool("./src/main/resources/img/testNumbers/Six.jpg");
+            imageTool[7] = new ImageTool("./src/main/resources/img/testNumbers/Seven.jpg");
+            imageTool[8] = new ImageTool("./src/main/resources/img/testNumbers/Eight.jpg");
+            imageTool[9] = new ImageTool("./src/main/resources/img/testNumbers/Nine.jpg");
+        } catch (IOException e) {
+            System.out.println("Reading file error: " + e.getMessage());
+            return;
+        }
+
+        for (int i = 0; i < 10; i++) {
+            List<Float> inputValues = imageTool[i].createInputArray();
+            // если выпало 3, ожидаем, что 4-й выход = 1.0, а остальные - нулю
+            List<Float> expectedOutput = new ArrayList<>();
+            for (int exp = 0; exp < 10; exp++) {
+                expectedOutput.add(exp == i ? 1.0f : 0.0f);
+            }
+
+            List<Float> neuralNetworkResult = imageNeuralNetResult(inputValues);
+
+            System.out.println(String.format("======================= Test %f =======================", i + 0.0f));
+            for (int p = 0; p < 10; p++) {
+                System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));
+            }
+        }
     }
 
     public void startImageLearning() {
@@ -45,12 +80,13 @@ public final class NeuralNet {
         Random random = new Random();
 
         // Итерации обучения
-        for (int i = 0; i < 100005; i++) {
+        for (int i = 0; i < 1000001; i++) {
 
             // Берём случайное значение из тестовой выборки
             int lot = random.nextInt(10);
 
             List<Float> inputValues = imageTool[lot].createInputArray();
+            // если выпало 3, ожидаем, что 4-й выход = 1.0, а остальные - нулю
             List<Float> expectedOutput = new ArrayList<>();
             for (int foo = 0; foo < 10; foo++) {
                 expectedOutput.add(foo == lot ? 1.0f : 0.0f);
@@ -60,44 +96,6 @@ public final class NeuralNet {
                 System.out.println("Что-то пошло не так");
                 return;
             }
-
-            if (i % 4 == 0) {
-                inputValues = new ArrayList<>();
-                inputValues.add(1.0f);
-                inputValues.add(0.0f);
-                expectedOutput = new ArrayList<>();
-                expectedOutput.add(1.0f);
-            } else if (i % 4 == 1) {
-
-                inputValues = new ArrayList<>();
-                inputValues.add(1.0f);
-                inputValues.add(1.0f);
-                expectedOutput = new ArrayList<>();
-                expectedOutput.add(0.0f);
-            } else if (i % 4 == 2) {
-
-                inputValues = new ArrayList<>();
-                inputValues.add(0.0f);
-                inputValues.add(1.0f);
-                expectedOutput = new ArrayList<>();
-                expectedOutput.add(1.0f);
-            } else if (i % 4 == 3) {
-
-                inputValues = new ArrayList<>();
-                inputValues.add(0.0f);
-                inputValues.add(0.0f);
-                expectedOutput = new ArrayList<>();
-                expectedOutput.add(0.0f);
-
-
-            }
-
-
-//                inputValues = new ArrayList<>();
-//                inputValues.add(0.2f);
-//                inputValues.add(0.5f);
-//                expectedOutput = new ArrayList<>();
-//                expectedOutput.add(0.4f);
 
             // Вычисляю выход нейронной сети
             List<Float> neuralNetworkResult = imageNeuralNetResult(inputValues);
@@ -173,9 +171,9 @@ public final class NeuralNet {
                 }
             }
 
-            if (i % 10000 == 0||i % 10000 == 1||i % 10000 == 3||i % 10000 == 4) {
+            if (i % 100000 == 0) {
                 System.out.println(String.format("======================= Step %f =======================", i + 0.0f));
-                for (int p = 0; p < 1; p++) {
+                for (int p = 0; p < 10; p++) {
                     System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));
                 }
             }
@@ -210,11 +208,6 @@ public final class NeuralNet {
         } catch (TooManyInputValues e) {
             System.out.println("ERROR: (second lvl) " + e.getMessage());
         }
-//        try {
-//            secondImageLayer.transferValues(onInput.toArray(Float[]::new));
-//        } catch (TooManyInputValues e) {
-//            System.out.println("ERROR: (second lvl) " + e.getMessage());
-//        }
 
         // И в последний слой
         try {
