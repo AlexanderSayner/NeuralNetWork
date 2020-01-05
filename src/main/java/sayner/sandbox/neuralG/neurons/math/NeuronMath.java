@@ -15,7 +15,7 @@ public class NeuronMath {
         return (ideal - neuronOutput) * derivative(summaryNeuronInput);
     }
 
-    private static Float derivative(Float x) {
+    public static Float derivative(Float x) {
         return sigmoid(x) * (1 - sigmoid(x));
     }
 
@@ -37,12 +37,13 @@ public class NeuronMath {
 
     /**
      * Вычисляет ошибку для нейронов на скрытом слое
+     *
      * @param hiddenErrorSum дельта ошибки (сумма произведений весов синапсов
      *                       на дельты ошибок соответвующих им нейронов)
-     * @param sumOnInput вход функции активации нейрона
+     * @param sumOnInput     вход функции активации нейрона
      * @return дельта ошибки нейрона скрытого слоя
      */
-    public static Float hiddenError(Float hiddenErrorSum,Float sumOnInput){
-        return hiddenErrorSum*derivative(sumOnInput);
+    public static Float hiddenError(Float hiddenErrorSum, Float sumOnInput) {
+        return hiddenErrorSum * NeuronMath.derivative(sumOnInput);
     }
 }
