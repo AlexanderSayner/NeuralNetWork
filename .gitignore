@@ -49,7 +49,6 @@ out
 *.zip
 *.tar.gz
 *.rar
-*.bat
 *.bin
 *.iml
 
