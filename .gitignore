@@ -25,7 +25,6 @@ buildNumber.properties
 
 # Игнорирование всех файлов и папок в ЛЮБЫХ директориях с указанным именем
 /build
-gradlew
 target
 .idea
 /gradle
