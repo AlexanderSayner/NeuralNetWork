@@ -17,10 +17,6 @@ public class SynapseImpl implements Synapse {
         this(weight, 0.0f, new NeuronImpl());
     }
 
-    public SynapseImpl(Float weight, Float value) {
-        this(weight, value, new NeuronImpl());
-    }
-
     public SynapseImpl(Float weight, Neuron axon) {
         this(weight, 0.0f, axon);
     }
@@ -42,27 +38,9 @@ public class SynapseImpl implements Synapse {
     }
 
     @Override
-    public void reduceWeight(Float value) {
-        previousWeight = weight;
-        weight -= value;
-    }
-
-    @Override
     public void increaseWeight(Float value) {
         previousWeight = weight;
         weight += value;
-    }
-
-    @Override
-    public Float getPreviousWeightShift() {
-        return previousWeight;
-    }
-
-    @Override
-    public Float setNewWeight(Float weight) {
-        previousWeight = this.weight;
-        this.weight = weight;
-        return previousWeight;
     }
 
     // =================================================================================================================
@@ -72,11 +50,6 @@ public class SynapseImpl implements Synapse {
     @Override
     public Neuron getConnectedAxon() {
         return axon;
-    }
-
-    @Override
-    public void setNewConnectedAxon(Neuron axon) {
-        this.axon = axon;
     }
 
     @Override

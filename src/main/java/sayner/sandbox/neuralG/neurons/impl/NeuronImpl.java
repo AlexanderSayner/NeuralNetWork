@@ -60,16 +60,6 @@ public class NeuronImpl implements Neuron {
     }
 
     @Override
-    public Boolean addNewSynapse(Synapse synapse) {
-        return synapseList.add(synapse);
-    }
-
-    @Override
-    public Boolean removeSynapse(Synapse synapse) {
-        return synapseList.remove(synapse);
-    }
-
-    @Override
     public Float getResult() {
         return result;
     }

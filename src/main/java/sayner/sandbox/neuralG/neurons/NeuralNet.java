@@ -9,7 +9,7 @@ import java.util.*;
 
 public final class NeuralNet {
 
-    Float E = 0.3f; // Скорость обучения
+    Float E = 0.5f; // Скорость обучения
 
     private final Layer firstImageLayer;
     private final Layer secondImageLayer;
@@ -20,42 +20,6 @@ public final class NeuralNet {
         firstImageLayer = XorNetBuilder.createFirstLayer();
         secondImageLayer = XorNetBuilder.createSecondLayer(firstImageLayer);
         outputImageLayer = XorNetBuilder.createOutputLayer(secondImageLayer);
-    }
-
-    public void testRun() {
-
-        ImageTool[] imageTool = new ImageTool[10];
-        try {
-            imageTool[0] = new ImageTool("./src/main/resources/img/testNumbers/Zero.jpg");
-            imageTool[1] = new ImageTool("./src/main/resources/img/testNumbers/One.jpg");
-            imageTool[2] = new ImageTool("./src/main/resources/img/testNumbers/Two.jpg");
-            imageTool[3] = new ImageTool("./src/main/resources/img/testNumbers/Three.jpg");
-            imageTool[4] = new ImageTool("./src/main/resources/img/testNumbers/Four.jpg");
-            imageTool[5] = new ImageTool("./src/main/resources/img/testNumbers/Five.jpg");
-            imageTool[6] = new ImageTool("./src/main/resources/img/testNumbers/Six.jpg");
-            imageTool[7] = new ImageTool("./src/main/resources/img/testNumbers/Seven.jpg");
-            imageTool[8] = new ImageTool("./src/main/resources/img/testNumbers/Eight.jpg");
-            imageTool[9] = new ImageTool("./src/main/resources/img/testNumbers/Nine.jpg");
-        } catch (IOException e) {
-            System.out.println("Reading file error: " + e.getMessage());
-            return;
-        }
-
-        for (int i = 0; i < 10; i++) {
-            List<Float> inputValues = imageTool[i].createInputArray();
-            // если выпало 3, ожидаем, что 4-й выход = 1.0, а остальные - нулю
-            List<Float> expectedOutput = new ArrayList<>();
-            for (int exp = 0; exp < 10; exp++) {
-                expectedOutput.add(exp == i ? 1.0f : 0.0f);
-            }
-
-            List<Float> neuralNetworkResult = imageNeuralNetResult(inputValues);
-
-            System.out.println(String.format("======================= Test %f =======================", i + 0.0f));
-            for (int p = 0; p < 10; p++) {
-                System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));
-            }
-        }
     }
 
     public void startImageLearning() {
@@ -77,13 +41,15 @@ public final class NeuralNet {
             return;
         }
 
-        Random random = new Random();
+//        Random random = new Random();
 
         // Итерации обучения
         for (int i = 0; i < 1000001; i++) {
 
             // Берём случайное значение из тестовой выборки
-            int lot = random.nextInt(10);
+//            int lot = random.nextInt(10);
+
+            int lot = i % 10;
 
             List<Float> inputValues = imageTool[lot].createInputArray();
             // если выпало 3, ожидаем, что 4-й выход = 1.0, а остальные - нулю
@@ -171,7 +137,14 @@ public final class NeuralNet {
                 }
             }
 
-            if (i % 100000 == 0) {
+
+            if (i % 10000 == 0 || i % 10000 == 1 || i % 10000 == 2 || i % 10000 == 3 || i % 10000 == 4 || i % 10000 == 5 || i % 10000 == 6 || i % 10000 == 7 || i % 10000 == 8 || i % 10000 == 9) {
+                System.out.println(String.format("======================= Step %f =======================", i + 0.0f));
+                for (int p = 0; p < 10; p++) {
+                    System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));
+                }
+
+            } else if (i >= 999990) {
                 System.out.println(String.format("======================= Step %f =======================", i + 0.0f));
                 for (int p = 0; p < 10; p++) {
                     System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));

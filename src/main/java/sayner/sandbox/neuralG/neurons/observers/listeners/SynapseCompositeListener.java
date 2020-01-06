@@ -13,16 +13,4 @@ public class SynapseCompositeListener extends ObserverList<SynapseObserver> impl
 
         synapseTranslator.inputValueHasReceived(input);
     }
-
-    @Override
-    public void reduceWeight(Float value) {
-
-        // TODO: добавить сюда новый транслятор
-    }
-
-    @Override
-    public void increaseWeight(Float value) {
-
-        // TODO: добавить сюда новый транслятор
-    }
 }

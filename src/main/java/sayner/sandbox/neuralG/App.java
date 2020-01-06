@@ -247,7 +247,6 @@ public class App {
 
         NeuralNet neuralNet=new NeuralNet();
         neuralNet.startImageLearning();
-neuralNet.testRun();
     }
 
 }

@@ -12,15 +12,34 @@ import java.util.List;
  */
 public interface Neuron extends NeuronObserver {
 
+    /**
+     * Получает список синапсов
+     * @return синапсы
+     */
     List<Synapse> getSynapses();
 
+    /**
+     * Получает сумму взвешанных значений с синапсов
+     * @return вход активационной функции
+     */
     Float getInputValue();
 
+    /**
+     * Получает текущее значение ошибки нейрона
+     * @return значение ошибки нейрона
+     */
     Float getNeuronErrorDelta();
+
+    /**
+     * Берёт некущее значение ошибки нейрона и складывает его с текущем
+     * @param weightDelta слагаемое к дельте
+     * @return сумма
+     */
     Float sumWeightDelta(Float weightDelta);
+
+    /**
+     * Устанавливает новое значение ошибки нейрона
+     * @param neuronErrorDelta дельта ошибки
+     */
     void setNeuronErrorDelta(Float neuronErrorDelta);
-
-    Boolean addNewSynapse(Synapse synapse);
-
-    Boolean removeSynapse(Synapse synapse);
 }

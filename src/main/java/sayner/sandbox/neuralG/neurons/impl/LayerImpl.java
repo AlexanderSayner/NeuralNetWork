@@ -45,7 +45,9 @@ public class LayerImpl implements Layer {
             }
             // Он добавит все значения, которые только смог, но дальше работать не пойдёт
         } catch (IndexOutOfBoundsException e) {
-            System.out.println(String.format("Тсс, слишком чисел дофига на входе %s", e.getMessage()));
+            String message=String.format("Слишком много чисел на входе %s", e.getMessage());
+            System.out.println(message);
+            throw new TooManyInputValues(message);
         }
     }
 
