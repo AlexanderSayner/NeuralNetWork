@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Алгоритмы постройки стоёв нейронной сети
  */
-public final class XorNetBuilder {
+public final class NeuralNetBuilder {
 
     /**
      * Вычисляет случайное значение веса для синапса

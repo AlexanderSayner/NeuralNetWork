@@ -17,9 +17,9 @@ public final class NeuralNet {
 
     public NeuralNet() {
 
-        firstImageLayer = XorNetBuilder.createFirstLayer();
-        secondImageLayer = XorNetBuilder.createSecondLayer(firstImageLayer);
-        outputImageLayer = XorNetBuilder.createOutputLayer(secondImageLayer);
+        firstImageLayer = NeuralNetBuilder.createFirstLayer();
+        secondImageLayer = NeuralNetBuilder.createSecondLayer(firstImageLayer);
+        outputImageLayer = NeuralNetBuilder.createOutputLayer(secondImageLayer);
     }
 
     public void startImageLearning() {

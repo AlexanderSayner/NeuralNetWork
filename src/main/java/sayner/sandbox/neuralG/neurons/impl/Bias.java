@@ -13,7 +13,7 @@ public class Bias implements Neuron {
 
     private List<Synapse> synapseList = new ArrayList<>();
 
-    private Float bias = 0.0f;
+    private Float bias = 10.0f;
     private Float neuronErrorDelta; // Дельта ошибки нейрона
 
     @Override
