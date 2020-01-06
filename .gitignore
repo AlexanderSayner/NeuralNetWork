@@ -7,6 +7,8 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+.classpath
+/bin/*
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !/.mvn/wrapper/maven-wrapper.jar
@@ -23,7 +25,6 @@ buildNumber.properties
 
 # Игнорирование всех файлов и папок в ЛЮБЫХ директориях с указанным именем
 /build
-gradlew
 target
 .idea
 /gradle
@@ -48,7 +49,6 @@ out
 *.zip
 *.tar.gz
 *.rar
-*.bat
 *.bin
 *.iml
 

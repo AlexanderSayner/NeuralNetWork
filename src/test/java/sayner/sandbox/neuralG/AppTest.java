@@ -1,4 +1,4 @@
-package sayner.sandbox.NeuralG;
+package sayner.sandbox.neuralG;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

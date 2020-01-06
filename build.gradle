@@ -1,6 +1,8 @@
 plugins {
     id 'java'
     id 'application'
+    id 'war'
+    id 'idea'
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -25,15 +27,23 @@ switch (OperatingSystem.current()) {
 group 'sayner.sandbox'
 version '1.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
-mainClassName = 'sayner.sandbox.NeuralG.App'
+mainClassName = 'sayner.sandbox.neuralG.App'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+
+    // Apache library contains utility classes, stream implementations, file filters, file comparators, endian transformation classes, and much more.
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+
+    // Это потому, что я плохо матан учил
+    // https://mvnrepository.com/artifact/org.joml/joml
+    implementation group: 'org.joml', name: 'joml', version: '1.9.19'
 
     // LWJGL
 
@@ -110,4 +120,23 @@ dependencies {
     // TEST
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task fatJar(type: Jar) {
+    archiveClassifier = 'fat'
+
+    from sourceSets.main.output
+
+    dependsOn configurations.runtimeClasspath
+
+    from {
+        configurations.runtimeClasspath.findAll { it.getName() }.collect { zipTree(it) }
+    }
+
+    manifest {
+        attributes(
+                'Class-Path': configurations.compile.collect { it.getName() }.join(''),
+                'Main-Class': 'sayner.sandbox.neuralG.App'
+        )
+    }
 }
