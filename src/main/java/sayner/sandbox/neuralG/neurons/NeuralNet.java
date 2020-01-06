@@ -138,7 +138,7 @@ public final class NeuralNet {
             }
 
 
-            if (i % 10000 == 0 || i % 10000 == 1 || i % 10000 == 2 || i % 10000 == 3 || i % 10000 == 4 || i % 10000 == 5 || i % 10000 == 6 || i % 10000 == 7 || i % 10000 == 8 || i % 10000 == 9) {
+            if (i % 1000 == 0 || i % 1000 == 1 || i % 1000 == 2 || i % 1000 == 3 || i % 1000 == 4 || i % 1000 == 5 || i % 1000 == 6 || i % 1000 == 7 || i % 1000 == 8 || i % 1000 == 9) {
                 System.out.println(String.format("======================= Step %f =======================", i + 0.0f));
                 for (int p = 0; p < 10; p++) {
                     System.out.println(String.format("expected result is %f, in fact: %f", expectedOutput.get(p), neuralNetworkResult.get(p)));

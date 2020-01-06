@@ -19,14 +19,21 @@ public interface Layer {
     void transferValues(Float... input) throws TooManyInputValues;
 
     /**
-     * Выход слоя
-     * Запускает вычисления
+     * Запускает вычисления (активирует нейроны)
      *
      * @return
      */
     void activateNeurons();
 
+    /**
+     * Получает выходной вектор слоя
+     * @return вектор, размерность равна количесиву нейронов слоя
+     */
     List<Float> getResultList();
 
+    /**
+     * Получается все нейроны, из которых состои слой
+     * @return массив с нейронами в порядке их расположения
+     */
     List<Neuron> getNeurons();
 }
