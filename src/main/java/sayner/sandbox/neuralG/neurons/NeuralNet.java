@@ -5,11 +5,12 @@ import sayner.sandbox.neuralG.neurons.math.NeuronMath;
 import sayner.sandbox.neuralG.neurons.tools.ImageTool;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class NeuralNet {
 
-    Float E = 0.7f; // Скорость обучения
+    Float E = 0.3f; // Скорость обучения
 
     private final Layer firstImageLayer;
     private final Layer secondImageLayer;
@@ -24,18 +25,40 @@ public final class NeuralNet {
 
     public void startImageLearning() {
 
-        ImageTool[] imageTool = new ImageTool[10];
+        ImageTool[] imageTool1 = new ImageTool[10];
+        ImageTool[] imageTool2 = new ImageTool[10];
+        ImageTool[] imageTool3 = new ImageTool[10];
         try {
-            imageTool[0] = new ImageTool("./src/main/resources/img/Zero.jpg");
-            imageTool[1] = new ImageTool("./src/main/resources/img/One.jpg");
-            imageTool[2] = new ImageTool("./src/main/resources/img/Two.jpg");
-            imageTool[3] = new ImageTool("./src/main/resources/img/Three.jpg");
-            imageTool[4] = new ImageTool("./src/main/resources/img/Four.jpg");
-            imageTool[5] = new ImageTool("./src/main/resources/img/Five.jpg");
-            imageTool[6] = new ImageTool("./src/main/resources/img/Six.jpg");
-            imageTool[7] = new ImageTool("./src/main/resources/img/Seven.jpg");
-            imageTool[8] = new ImageTool("./src/main/resources/img/Eight.jpg");
-            imageTool[9] = new ImageTool("./src/main/resources/img/Nine.jpg");
+            imageTool1[0] = new ImageTool("./src/main/resources/img/test/Zero.jpg");
+            imageTool1[1] = new ImageTool("./src/main/resources/img/test/One.jpg");
+            imageTool1[2] = new ImageTool("./src/main/resources/img/test/Two.jpg");
+            imageTool1[3] = new ImageTool("./src/main/resources/img/test/Three.jpg");
+            imageTool1[4] = new ImageTool("./src/main/resources/img/test/Four.jpg");
+            imageTool1[5] = new ImageTool("./src/main/resources/img/test/Five.jpg");
+            imageTool1[6] = new ImageTool("./src/main/resources/img/test/Six.jpg");
+            imageTool1[7] = new ImageTool("./src/main/resources/img/test/Seven.jpg");
+            imageTool1[8] = new ImageTool("./src/main/resources/img/test/Eight.jpg");
+            imageTool1[9] = new ImageTool("./src/main/resources/img/test/Nine.jpg");
+            imageTool3[0] = new ImageTool("./src/main/resources/img/test/Zero-3.jpg");
+            imageTool3[1] = new ImageTool("./src/main/resources/img/test/One-3.jpg");
+            imageTool3[2] = new ImageTool("./src/main/resources/img/test/Two-3.jpg");
+            imageTool3[3] = new ImageTool("./src/main/resources/img/test/Three-3.jpg");
+            imageTool3[4] = new ImageTool("./src/main/resources/img/test/Four-3.jpg");
+            imageTool3[5] = new ImageTool("./src/main/resources/img/test/Five-3.jpg");
+            imageTool3[6] = new ImageTool("./src/main/resources/img/test/Six-3.jpg");
+            imageTool3[7] = new ImageTool("./src/main/resources/img/test/Seven-3.jpg");
+            imageTool3[8] = new ImageTool("./src/main/resources/img/test/Eight-3.jpg");
+            imageTool3[9] = new ImageTool("./src/main/resources/img/test/Nine-3.jpg");
+            imageTool2[0] = new ImageTool("./src/main/resources/img/test/Zero-2.jpg");
+            imageTool2[1] = new ImageTool("./src/main/resources/img/test/One-2.jpg");
+            imageTool2[2] = new ImageTool("./src/main/resources/img/test/Two-2.jpg");
+            imageTool2[3] = new ImageTool("./src/main/resources/img/test/Three-2.jpg");
+            imageTool2[4] = new ImageTool("./src/main/resources/img/test/Four-2.jpg");
+            imageTool2[5] = new ImageTool("./src/main/resources/img/test/Five-2.jpg");
+            imageTool2[6] = new ImageTool("./src/main/resources/img/test/Six-2.jpg");
+            imageTool2[7] = new ImageTool("./src/main/resources/img/test/Seven-2.jpg");
+            imageTool2[8] = new ImageTool("./src/main/resources/img/test/Eight-2.jpg");
+            imageTool2[9] = new ImageTool("./src/main/resources/img/test/Nine-2.jpg");
         } catch (IOException e) {
             System.out.println("Reading file error: " + e.getMessage());
             return;
@@ -44,14 +67,30 @@ public final class NeuralNet {
 //        Random random = new Random();
 
         // Итерации обучения
-        for (int i = 0; i < 1000001; i++) {
+        for (int i = 0; i < 50000; i++) {
 
             // Берём случайное значение из тестовой выборки
 //            int lot = random.nextInt(10);
 
+
             int lot = i % 10;
 
-            List<Float> inputValues = imageTool[lot].createInputArray();
+            List<Float> inputValues;
+            switch (i%3){
+                case 0:
+                    inputValues = imageTool1[lot].createInputArray();
+                    break;
+                case 1:
+                    inputValues = imageTool2[lot].createInputArray();
+                    break;
+                case 2:
+                    inputValues = imageTool3[lot].createInputArray();
+                    break;
+                default:
+                    throw  new IllegalStateException();
+            }
+
+
             // если выпало 3, ожидаем, что 4-й выход = 1.0, а остальные - нулю
             List<Float> expectedOutput = new ArrayList<>();
             for (int foo = 0; foo < 10; foo++) {

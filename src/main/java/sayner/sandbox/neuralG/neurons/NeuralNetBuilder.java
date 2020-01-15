@@ -35,7 +35,7 @@ public final class NeuralNetBuilder {
         List<Neuron> neurons = new ArrayList<>();
 
         // Нейроны первого скрытого слоя
-        for (int i = 0; i < 64; i++) {
+        for (int i = 0; i < 128; i++) {
 
             List<Synapse> synapses = new ArrayList<>();
             for (int s = 0; s < 28 * 28; s++) {
@@ -78,12 +78,12 @@ public final class NeuralNetBuilder {
 
             List<Synapse> synapses = new ArrayList<>();
             // Соединён с каждым нейроном предыдущего слоя
-            for (int s = 0; s < 64; s++) {
+            for (int s = 0; s < 128; s++) {
                 synapses.add(new SynapseImpl(randomWeight(), firstLayer.getNeurons().get(s)));
             }
 
             // Генерация синапсов для нейрона смещения на предыдущем слое
-            Synapse bias = new SynapseImpl(randomWeight(), firstLayer.getNeurons().get(64));
+            Synapse bias = new SynapseImpl(randomWeight(), firstLayer.getNeurons().get(128));
             synapses.add(bias);
 
             Neuron neuron = new NeuronImpl(synapses.toArray(Synapse[]::new));
@@ -91,8 +91,8 @@ public final class NeuralNetBuilder {
         }
 
         // Входных сигналов c первого слоя 16, следовательно и наблюдателей столько же
-        SynapseCompositeListener[] observers = new SynapseCompositeListener[64];
-        for (int i = 0; i < 64; i++) {
+        SynapseCompositeListener[] observers = new SynapseCompositeListener[128];
+        for (int i = 0; i < 128; i++) {
             observers[i] = new SynapseCompositeListener();
             // 1-й нейрон соединён с 1-м синапсом всем нейронов второго слоя, 2-й со 2-м и т.д.
             for (Neuron neuron : neurons) {
