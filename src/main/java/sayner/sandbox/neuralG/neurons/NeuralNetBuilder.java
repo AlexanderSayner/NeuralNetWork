@@ -21,7 +21,7 @@ public final class NeuralNetBuilder {
      * @return число в промежутке [ -0.5f ; 0.5f )
      */
     private static float randomWeight() {
-        return (ThreadLocalRandom.current().nextFloat()) * 2 - 1.0f;
+        return (ThreadLocalRandom.current().nextFloat()) * 0.5f - 0.25f;
     }
 
     /**

@@ -9,7 +9,7 @@ import java.util.*;
 
 public final class NeuralNet {
 
-    Float E = 0.5f; // Скорость обучения
+    Float E = 0.7f; // Скорость обучения
 
     private final Layer firstImageLayer;
     private final Layer secondImageLayer;
