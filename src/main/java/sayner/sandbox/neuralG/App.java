@@ -254,16 +254,16 @@ public class App {
         // Проверка результата обучения нейронной сети
         ImageTool[] imageTool = new ImageTool[10];
         try {
-            imageTool[0] = new ImageTool("./src/main/resources/img/test/Zero-1.jpg");
-            imageTool[1] = new ImageTool("./src/main/resources/img/test/One-1.jpg");
-            imageTool[2] = new ImageTool("./src/main/resources/img/test/Two-1.jpg");
-            imageTool[3] = new ImageTool("./src/main/resources/img/test/Three-1.jpg");
-            imageTool[4] = new ImageTool("./src/main/resources/img/test/Four-1.jpg");
-            imageTool[5] = new ImageTool("./src/main/resources/img/test/Five-1.jpg");
-            imageTool[6] = new ImageTool("./src/main/resources/img/test/Six-1.jpg");
-            imageTool[7] = new ImageTool("./src/main/resources/img/test/Seven-1.jpg");
-            imageTool[8] = new ImageTool("./src/main/resources/img/test/Eight-1.jpg");
-            imageTool[9] = new ImageTool("./src/main/resources/img/test/Nine-1.jpg");
+            imageTool[0] = new ImageTool("./src/main/resources/img/test/Zero-3.jpg");
+            imageTool[1] = new ImageTool("./src/main/resources/img/test/One.jpg");
+            imageTool[2] = new ImageTool("./src/main/resources/img/test/Two.jpg");
+            imageTool[3] = new ImageTool("./src/main/resources/img/test/Three-2.jpg");
+            imageTool[4] = new ImageTool("./src/main/resources/img/test/Four.jpg");
+            imageTool[5] = new ImageTool("./src/main/resources/img/test/Five-3.jpg");
+            imageTool[6] = new ImageTool("./src/main/resources/img/test/Six-2.jpg");
+            imageTool[7] = new ImageTool("./src/main/resources/img/test/Seven-2.jpg");
+            imageTool[8] = new ImageTool("./src/main/resources/img/test/Eight-3.jpg");
+            imageTool[9] = new ImageTool("./src/main/resources/img/test/Nine.jpg");
         } catch (IOException e) {
             System.out.println("Reading file error: " + e.getMessage());
             return;
