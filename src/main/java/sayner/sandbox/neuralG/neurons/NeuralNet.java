@@ -77,6 +77,7 @@ public final class NeuralNet {
             List<Float> inputValues;
             switch (i%3){
                 case 0:
+                    // TODO: выборку lot переделать
                     inputValues = imageTool1[lot].createInputArray();
                     break;
                 case 1:
