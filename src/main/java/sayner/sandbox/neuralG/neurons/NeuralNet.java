@@ -72,7 +72,6 @@ public final class NeuralNet {
             // Берём случайное значение из тестовой выборки
 //            int lot = random.nextInt(10);
 
-
             int lot = i % 10;
 
             List<Float> inputValues;
