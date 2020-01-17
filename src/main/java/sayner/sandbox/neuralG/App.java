@@ -1,6 +1,7 @@
 package sayner.sandbox.neuralG;
 
 import org.lwjgl.Version;
+import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
@@ -14,7 +15,6 @@ import sayner.sandbox.neuralG.timer.Delay;
 
 import java.nio.IntBuffer;
 
-import org.lwjgl.glfw.Callbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -85,7 +85,7 @@ public class App {
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // the window will be resizablee
         // Set OpenGL 3.0 version
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
         //Установка профайла для которого создается контекст
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
