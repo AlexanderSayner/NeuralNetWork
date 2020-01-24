@@ -21,4 +21,8 @@ public class Vector3f implements VectorI<Float> {
         this.y = y;
         this.z = z;
     }
+
+    public org.joml.Vector3f getJomlVector() {
+        return new org.joml.Vector3f(x, y, z);
+    }
 }

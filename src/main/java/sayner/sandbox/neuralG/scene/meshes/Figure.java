@@ -1,4 +1,4 @@
-package sayner.sandbox.neuralG.scene;
+package sayner.sandbox.neuralG.scene.meshes;
 
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Texture;
@@ -7,13 +7,14 @@ import sayner.sandbox.neuralG.graphics.VertexArray;
 import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
+import sayner.sandbox.neuralG.scene.Camera;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Класс хранит в себье информацию отрисовкит треугольника
  */
-public class Figure {
+public class Figure implements Mesh{
 
     private final VertexArray body;
     private final Texture texture;
@@ -132,7 +133,7 @@ public class Figure {
     /**
      * Переммещение объекта
      */
-    public void update(Transformation transformation) {
+    public void update(Transformation transformation, Camera camera) {
 
 
         if (Input.isKeyDown(GLFW_KEY_S)) {
@@ -152,10 +153,9 @@ public class Figure {
 
         rotation.y += 0.5f;
 
-        this.worldMatrix = transformation.getWorldMatrix(
-                this.position,
-                this.rotation,
-                this.scale
+        this.worldMatrix = transformation.getModelViewMatrix(
+                this,
+                transformation.getViewMatrix(camera)
         );
     }
 
@@ -172,5 +172,20 @@ public class Figure {
         this.body.unbind();
         this.texture.unbind();
         Shader.ImageShader.disable();
+    }
+
+    @Override
+    public org.joml.Vector3f getRotation() {
+        return rotation.getJomlVector();
+    }
+
+    @Override
+    public org.joml.Vector3f getPosition() {
+        return position.getJomlVector();
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
     }
 }
