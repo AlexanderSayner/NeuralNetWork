@@ -152,6 +152,15 @@ public class Window {
         glfwPollEvents();
     }
 
+    /**
+     * Используется при передвижении камеры
+     * @param keyCode GLFW_KEY_? @see {@link org.lwjgl.glfw.GLFW}
+     * @return статус нажатия данной клавиши
+     */
+    public boolean isKeyPressed(int keyCode) {
+        return glfwGetKey(window, keyCode) == GLFW_PRESS;
+    }
+
     // ====================
     // Getter'ы & Setter'ы
     // ====================

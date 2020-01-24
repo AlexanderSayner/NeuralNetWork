@@ -1,15 +1,18 @@
 package sayner.sandbox.neuralG;
 
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.lwjgl.Version;
 import org.lwjgl.opengl.GL;
 import sayner.sandbox.neuralG.engine.Window;
 import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Transformation;
+import sayner.sandbox.neuralG.input.MouseInput;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.scene.Camera;
-import sayner.sandbox.neuralG.scene.meshes.Figure;
+import sayner.sandbox.neuralG.scene.meshes.GrassBlock;
 
-import static org.lwjgl.glfw.GLFW.glfwTerminate;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE1;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -29,11 +32,16 @@ public class App {
     private static final float FOV = (float) Math.toRadians(60.0f);
     private static final float Z_NEAR = 0.01f;
     private static final float Z_FAR = 1000.f;
+
     private Matrix4f projectionMatrix;
 
     private final Camera camera = new Camera();
+    private final MouseInput mouseInput=new MouseInput();
+    private final Vector3f cameraInc = new Vector3f(0, 0, 0);
+    private static final float CAMERA_POS_STEP = 0.05f;
+    private static final float MOUSE_SENSITIVITY = 0.2f;
 
-    private Figure figure;
+    private GrassBlock grassBlock;
 
     /**
      * Start in the new thread
@@ -54,6 +62,7 @@ public class App {
 
         // Функция инициализации всего, что будет необходимо OpenGL
         window.init();
+        mouseInput.init(window);
         // Цикл отрисовки
         loop();
 
@@ -110,7 +119,7 @@ public class App {
 
         setUpLoop();
 
-        this.figure = new Figure();
+        this.grassBlock = new GrassBlock();
         // Загружаем шейдеры
         Shader.loadAllShaders();
 
@@ -131,13 +140,24 @@ public class App {
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer (every pixel to black color)
 
+            mouseInput.input(window);
+            camera.movePosition(cameraInc.x * CAMERA_POS_STEP, cameraInc.y * CAMERA_POS_STEP, cameraInc.z * CAMERA_POS_STEP);
+
+            // Update camera based on mouse
+            if (mouseInput.isRightButtonPressed()) {
+                Vector2f rotVec = mouseInput.getDisplVec();
+                camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+            }
+
+            input(window,mouseInput);
+
             // Update projection Matrix
-            this.projectionMatrix = new Matrix4f(transformation.getProjectionMatrix(FOV, 620, 620, Z_NEAR, Z_FAR));
+            this.projectionMatrix = new Matrix4f(transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR));
             Matrix4f matrix4f = new Matrix4f();
             Shader.ImageShader.setUniformMat4f("projectionMatrix", this.projectionMatrix);
 
-            this.figure.update(transformation, camera);
-            this.figure.render();
+            this.grassBlock.update(transformation, camera);
+            this.grassBlock.render();
 
             int error = glGetError();
             if (error != GL_NO_ERROR) {
@@ -145,6 +165,30 @@ public class App {
             }
 
             window.update();
+        }
+    }
+
+    /**
+     * Отслеживание ввода для передвижения камеры
+     * @param window handle
+     * @param mouseInput управление мышью
+     */
+    public void input(Window window, MouseInput mouseInput) {
+        cameraInc.set(0, 0, 0);
+        if (window.isKeyPressed(GLFW_KEY_W)) {
+            cameraInc.z = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_S)) {
+            cameraInc.z = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)) {
+            cameraInc.x = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_D)) {
+            cameraInc.x = 1;
+        }
+        if (window.isKeyPressed(GLFW_KEY_Z)) {
+            cameraInc.y = -1;
+        } else if (window.isKeyPressed(GLFW_KEY_X)) {
+            cameraInc.y = 1;
         }
     }
 

@@ -4,29 +4,26 @@ import sayner.sandbox.neuralG.graphics.Shader;
 import sayner.sandbox.neuralG.graphics.Texture;
 import sayner.sandbox.neuralG.graphics.Transformation;
 import sayner.sandbox.neuralG.graphics.VertexArray;
-import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
 import sayner.sandbox.neuralG.scene.Camera;
 
-import static org.lwjgl.glfw.GLFW.*;
-
 /**
  * Класс хранит в себье информацию отрисовкит треугольника
  */
-public class Figure implements Mesh{
+public class GrassBlock implements Mesh{
 
     private final VertexArray body;
     private final Texture texture;
     private Vector3f position = new Vector3f(); // сдвиг для матрица проекций
     private Vector3f rotation = new Vector3f(); // поворот
     private float scale = 1.0f; // масштаб
-    org.joml.Matrix4f worldMatrix;
+    org.joml.Matrix4f modelViewMatrix;
 
     /**
      * Задаём в конструкторе верошины
      */
-    public Figure() {
+    public GrassBlock() {
 
         // Create the Mesh
         float[] vertices = new float[]{
@@ -126,8 +123,7 @@ public class Figure implements Mesh{
         // Объект инициаплизирован
         this.body = new VertexArray(vertices, indices, textureCoordinates);
         this.texture = new Texture("./src/main/resources/img/grassblock.png");
-        this.position.z = -2.0f;
-        this.rotation.x = 30.0f;
+        this.position.z = -3.0f;
     }
 
     /**
@@ -136,24 +132,11 @@ public class Figure implements Mesh{
     public void update(Transformation transformation, Camera camera) {
 
 
-        if (Input.isKeyDown(GLFW_KEY_S)) {
-            rotation.z += 1.0f;
-        }
-        if (Input.isKeyDown(GLFW_KEY_W)) {
-            rotation.z -= 1.0f;
-        }
+//        if (Input.isKeyDown(GLFW_KEY_S)) {
+//            rotation.z += 1.0f;
+//        }
 
-        if (Input.isKeyDown(GLFW_KEY_D)) {
-            rotation.x += 1.0f;
-        }
-
-        if (Input.isKeyDown(GLFW_KEY_A)) {
-            rotation.x -= 1.0f;
-        }
-
-        rotation.y += 0.5f;
-
-        this.worldMatrix = transformation.getModelViewMatrix(
+        this.modelViewMatrix = transformation.getModelViewMatrix(
                 this,
                 transformation.getViewMatrix(camera)
         );
@@ -163,8 +146,8 @@ public class Figure implements Mesh{
     public void render() {
 
         Shader.ImageShader.enable();
-        Matrix4f worldMatrix = new Matrix4f(this.worldMatrix);
-        Shader.ImageShader.setUniformMat4f("worldMatrix", worldMatrix);
+        Matrix4f worldMatrix = new Matrix4f(this.modelViewMatrix);
+        Shader.ImageShader.setUniformMat4f("modelViewMatrix", worldMatrix);
         this.texture.bind();
         // Теперь его надо "завести"
         this.body.render();
