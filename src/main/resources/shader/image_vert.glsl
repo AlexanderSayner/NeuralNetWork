@@ -17,5 +17,5 @@ void main() {
 //    gl_Position = multi_matrix * vec4(position * scale, 1.0f);
     gl_Position = projectionMatrix * worldMatrix * vec4(position, 1.0f);
     // textire_coordinates = vec2(texture.x, 1.0f - texture.y);
-    texCoordinates = -1.0 * in_textire_coordinates;
+    texCoordinates = in_textire_coordinates;
 }

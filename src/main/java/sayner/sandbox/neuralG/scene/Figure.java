@@ -8,8 +8,7 @@ import sayner.sandbox.neuralG.input.Input;
 import sayner.sandbox.neuralG.maths.impl.Matrix4f;
 import sayner.sandbox.neuralG.maths.impl.Vector3f;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Класс хранит в себье информацию отрисовкит треугольника
@@ -28,21 +27,7 @@ public class Figure {
      */
     public Figure() {
 
-        /*
-        Remember that we are now simulating the effect of a camera looking at our scene.
-        And we provided two distances, one to the farthest plane (equal to 1000f) and one to the closest plane (equal to 0.01f)
-         */
-//        float[] vertices = new float[]{
-//                -0.5f, 0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-//                -0.5f, -0.5f, 0.5f, 0.0f, 0.5f, 0.0f,
-//                0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.5f,
-//                0.5f, 0.5f, 0.5f, 0.0f, 0.5f, 0.5f,
-//                -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.2f,
-//                0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.2f,
-//                -0.5f, -0.5f, -0.5f, 0.2f, 0.0f, 1.0f,
-//                0.5f, -0.5f, -0.5f, 0.2f, 0.2f, 0.2f,
-//        };
-
+        // Create the Mesh
         float[] vertices = new float[]{
                 // V0
                 -0.5f, 0.5f, 0.5f,
@@ -93,41 +78,6 @@ public class Figure {
                 // V19: V2 repeated
                 0.5f, -0.5f, 0.5f,
         };
-
-//        byte[] indices = new byte[]{
-//                0, 1, 3,
-//                3, 1, 2,
-//        };
-//        byte[] indices = new byte[]{
-//                // Front face
-//                0, 1, 3, 3, 1, 2,
-//                // Top Face
-//                4, 0, 3, 5, 4, 3,
-//                // Right face
-//                3, 2, 7, 5, 3, 7,
-//                // Left face
-//                6, 1, 0, 6, 0, 4,
-//                // Bottom face
-//                2, 1, 6, 2, 6, 7,
-//                // Back face
-//                7, 6, 4, 7, 4, 5,
-//        };
-
-        byte[] indices = new byte[]{
-                // Front face
-                0, 1, 3, 3, 1, 2,
-                // Top Face
-                8, 10, 11, 9, 8, 11,
-                // Right face
-                12, 13, 7, 5, 12, 7,
-                // Left face
-                14, 15, 6, 4, 14, 6,
-                // Bottom face
-                16, 18, 19, 17, 16, 19,
-                // Back face
-                4, 6, 7, 5, 4, 7,
-        };
-
         float[] textureCoordinates = new float[]{
                 0.0f, 0.0f,
                 0.0f, 0.5f,
@@ -159,12 +109,24 @@ public class Figure {
                 0.5f, 0.5f,
                 1.0f, 0.5f,
         };
-
+        byte[] indices = new byte[]{
+                // Front face
+                0, 1, 3, 3, 1, 2,
+                // Top Face
+                8, 10, 11, 9, 8, 11,
+                // Right face
+                12, 13, 7, 5, 12, 7,
+                // Left face
+                14, 15, 6, 4, 14, 6,
+                // Bottom face
+                16, 18, 19, 17, 16, 19,
+                // Back face
+                4, 6, 7, 5, 4, 7,};
         // Объект инициаплизирован
         this.body = new VertexArray(vertices, indices, textureCoordinates);
-        this.texture = new Texture("./src/main/resources/img/текстура.png");
+        this.texture = new Texture("./src/main/resources/img/grassblock.png");
         this.position.z = -2.0f;
-        this.rotation.x = 210.0f;
+        this.rotation.x = 30.0f;
     }
 
     /**
@@ -174,14 +136,20 @@ public class Figure {
 
 
         if (Input.isKeyDown(GLFW_KEY_S)) {
-
+            rotation.z += 1.0f;
         }
         if (Input.isKeyDown(GLFW_KEY_W)) {
-
+            rotation.z -= 1.0f;
         }
 
-//        rotation.z += 1.0f;
-//        rotation.x += 0.5f;
+        if (Input.isKeyDown(GLFW_KEY_D)) {
+            rotation.x += 1.0f;
+        }
+
+        if (Input.isKeyDown(GLFW_KEY_A)) {
+            rotation.x -= 1.0f;
+        }
+
         rotation.y += 0.5f;
 
         this.worldMatrix = transformation.getWorldMatrix(
@@ -194,9 +162,7 @@ public class Figure {
     // Цикл отрисовки
     public void render() {
 
-        // Надо надеяться, что эта штука инициализирована
         Shader.ImageShader.enable();
-//        Shader.ImageShader.setUniformMat4f("multi_matrix", Matrix4f.translate(this.position).multiply(Matrix4f.rotate(this.rotation)));
         Matrix4f worldMatrix = new Matrix4f(this.worldMatrix);
         Shader.ImageShader.setUniformMat4f("worldMatrix", worldMatrix);
         this.texture.bind();
