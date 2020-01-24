@@ -72,22 +72,17 @@ public final class NeuralNet {
             // Берём случайное значение из тестовой выборки
 //            int lot = random.nextInt(10);
 
-            int lot = i % 10;
+
+            int selection = i % 30;
+            int lot = selection % 10;
 
             List<Float> inputValues;
-            switch (i%3){
-                case 0:
-                    // TODO: выборку lot переделать
-                    inputValues = imageTool1[lot].createInputArray();
-                    break;
-                case 1:
-                    inputValues = imageTool2[lot].createInputArray();
-                    break;
-                case 2:
-                    inputValues = imageTool3[lot].createInputArray();
-                    break;
-                default:
-                    throw  new IllegalStateException();
+            if (selection < 10) {
+                inputValues = imageTool1[lot].createInputArray();
+            } else if (selection < 20) {
+                inputValues = imageTool2[lot].createInputArray();
+            } else {
+                inputValues = imageTool3[lot].createInputArray();
             }
 
 
